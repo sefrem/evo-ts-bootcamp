@@ -1,0 +1,8 @@
+.controls {
+    display: flex;
+    margin-top: 20px;
+}
+
+.controls button{
+    margin-right: 10px;
+}
