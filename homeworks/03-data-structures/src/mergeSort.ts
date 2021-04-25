@@ -39,9 +39,3 @@ export function mergeSort<T>(array: T[], compareFunction: CompareFunction<T>): T
     return divide(array)
 
 }
-//
-// const numberArray = [19, 4, 43, 8, 6, 12, 21, 94, 6];
-//
-// const stringArray = ['19', 4, '43', 8, undefined, 'unw', '6', '12', '21', '94', '6'];
-//
-// console.log(mergeSort(numberArray, compareFunction))

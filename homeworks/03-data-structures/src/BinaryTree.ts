@@ -1,6 +1,7 @@
 import {TraverseType, TreeNode} from "./types";
 
 export interface IBinaryTree<T> {
+
     setTree(value: TreeNode<T>): void,
 
     traverse(value: TraverseType): T[],
@@ -10,8 +11,7 @@ export interface IBinaryTree<T> {
 
 export class BinaryTree<T> implements IBinaryTree<T> {
 
-    constructor(protected tree: TreeNode<T>) {
-    }
+    constructor(protected tree: TreeNode<T>) {}
 
     setTree = (value: TreeNode<T>): void => {
         this.tree = value
