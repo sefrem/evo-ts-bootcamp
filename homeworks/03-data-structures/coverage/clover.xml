@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1619352272427" clover="3.2.0">
+  <project timestamp="1619352272427" name="All files">
+    <metrics statements="89" coveredstatements="89" conditionals="41" coveredconditionals="41" methods="19" coveredmethods="19" elements="149" coveredelements="149" complexity="0" loc="89" ncloc="89" packages="1" files="5" classes="5"/>
+    <file name="BinarySearchTree.ts" path="C:\Work\bootcamp\homework-fixed\evo-ts-bootcamp\homeworks\03-data-structures\src\BinarySearchTree.ts">
+      <metrics statements="11" coveredstatements="11" conditionals="9" coveredconditionals="9" methods="3" coveredmethods="3"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="8" count="1" type="cond" truecount="3" falsecount="0"/>
+      <line num="10" count="1" type="stmt"/>
+      <line num="11" count="2" type="stmt"/>
+      <line num="12" count="8" type="cond" truecount="4" falsecount="0"/>
+      <line num="13" count="2" type="stmt"/>
+      <line num="15" count="6" type="cond" truecount="2" falsecount="0"/>
+      <line num="16" count="4" type="stmt"/>
+      <line num="18" count="2" type="stmt"/>
+      <line num="20" count="2" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+    </file>
+    <file name="BinaryTree.ts" path="C:\Work\bootcamp\homework-fixed\evo-ts-bootcamp\homeworks\03-data-structures\src\BinaryTree.ts">
+      <metrics statements="43" coveredstatements="43" conditionals="20" coveredconditionals="20" methods="11" coveredmethods="11"/>
+      <line num="1" count="2" type="stmt"/>
+      <line num="11" count="2" type="stmt"/>
+      <line num="13" count="3" type="stmt"/>
+      <line num="16" count="3" type="stmt"/>
+      <line num="17" count="1" type="stmt"/>
+      <line num="20" count="3" type="stmt"/>
+      <line num="21" count="4" type="stmt"/>
+      <line num="23" count="1" type="stmt"/>
+      <line num="25" count="1" type="stmt"/>
+      <line num="27" count="1" type="stmt"/>
+      <line num="29" count="1" type="stmt"/>
+      <line num="33" count="3" type="stmt"/>
+      <line num="34" count="1" type="stmt"/>
+      <line num="35" count="1" type="stmt"/>
+      <line num="36" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="37" count="3" type="stmt"/>
+      <line num="39" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="40" count="4" type="stmt"/>
+      <line num="42" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="43" count="4" type="stmt"/>
+      <line num="46" count="1" type="stmt"/>
+      <line num="47" count="2" type="stmt"/>
+      <line num="50" count="3" type="stmt"/>
+      <line num="51" count="19" type="cond" truecount="2" falsecount="0"/>
+      <line num="52" count="9" type="stmt"/>
+      <line num="55" count="3" type="stmt"/>
+      <line num="56" count="19" type="cond" truecount="2" falsecount="0"/>
+      <line num="57" count="9" type="stmt"/>
+      <line num="60" count="3" type="stmt"/>
+      <line num="61" count="19" type="cond" truecount="2" falsecount="0"/>
+      <line num="62" count="9" type="stmt"/>
+      <line num="65" count="3" type="stmt"/>
+      <line num="66" count="1" type="stmt"/>
+      <line num="67" count="1" type="stmt"/>
+      <line num="69" count="1" type="stmt"/>
+      <line num="70" count="9" type="stmt"/>
+      <line num="71" count="9" type="stmt"/>
+      <line num="73" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="74" count="4" type="stmt"/>
+      <line num="76" count="9" type="cond" truecount="2" falsecount="0"/>
+      <line num="77" count="4" type="stmt"/>
+      <line num="80" count="1" type="stmt"/>
+      <line num="82" count="2" type="stmt"/>
+    </file>
+    <file name="mergeSort.ts" path="C:\Work\bootcamp\homework-fixed\evo-ts-bootcamp\homeworks\03-data-structures\src\mergeSort.ts">
+      <metrics statements="21" coveredstatements="21" conditionals="10" coveredconditionals="10" methods="4" coveredmethods="4"/>
+      <line num="5" count="1" type="stmt"/>
+      <line num="6" count="66" type="stmt"/>
+      <line num="7" count="66" type="stmt"/>
+      <line num="9" count="66" type="cond" truecount="2" falsecount="0"/>
+      <line num="10" count="33" type="cond" truecount="2" falsecount="0"/>
+      <line num="11" count="4" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="18" count="24" type="stmt"/>
+      <line num="20" count="24" type="cond" truecount="2" falsecount="0"/>
+      <line num="21" count="57" type="cond" truecount="2" falsecount="0"/>
+      <line num="22" count="33" type="stmt"/>
+      <line num="24" count="24" type="stmt"/>
+      <line num="28" count="24" type="stmt"/>
+      <line num="32" count="51" type="cond" truecount="2" falsecount="0"/>
+      <line num="33" count="27" type="stmt"/>
+      <line num="35" count="24" type="stmt"/>
+      <line num="36" count="24" type="stmt"/>
+      <line num="39" count="3" type="stmt"/>
+      <line num="43" count="1" type="stmt"/>
+      <line num="45" count="1" type="stmt"/>
+      <line num="47" count="1" type="stmt"/>
+    </file>
+    <file name="testData.ts" path="C:\Work\bootcamp\homework-fixed\evo-ts-bootcamp\homeworks\03-data-structures\src\testData.ts">
+      <metrics statements="9" coveredstatements="9" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <line num="1" count="2" type="stmt"/>
+      <line num="2" count="2" type="stmt"/>
+      <line num="3" count="2" type="stmt"/>
+      <line num="4" count="2" type="stmt"/>
+      <line num="5" count="2" type="stmt"/>
+      <line num="6" count="2" type="stmt"/>
+      <line num="7" count="2" type="stmt"/>
+      <line num="8" count="2" type="stmt"/>
+      <line num="9" count="2" type="stmt"/>
+    </file>
+    <file name="types.ts" path="C:\Work\bootcamp\homework-fixed\evo-ts-bootcamp\homeworks\03-data-structures\src\types.ts">
+      <metrics statements="5" coveredstatements="5" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+      <line num="7" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="8" count="2" type="stmt"/>
+      <line num="9" count="2" type="stmt"/>
+      <line num="10" count="2" type="stmt"/>
+      <line num="11" count="2" type="stmt"/>
+    </file>
+  </project>
+</coverage>
