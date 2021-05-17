@@ -1,0 +1,16 @@
+.photo {
+    width: 100%;
+}
+
+.photoContainer {
+    position: relative;
+}
+
+.photoDescription {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background: #000000;
+    color: #ffffff;
+    font-size: 10px;
+}

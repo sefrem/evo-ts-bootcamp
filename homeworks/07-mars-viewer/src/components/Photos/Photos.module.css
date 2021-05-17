@@ -1,0 +1,8 @@
+
+.photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, auto));
+    grid-gap: 10px;
+}
+
+
