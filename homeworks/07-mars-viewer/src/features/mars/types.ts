@@ -22,9 +22,16 @@ interface Sols {
   [key: number]: number[];
 }
 
+export type Rover = "perseverance" | "opportunity" | "curiosity" | "spirit";
+
 export interface MarsState {
-  sols: Sols;
-  photos: Sol[] | null;
-  status: "idle" | "loading" | "failed";
-  selectedSol: number;
+  rover: {
+    [key: string]: {
+      sols: Sols;
+      photos: Sol[];
+      status: "idle" | "loading" | "failed";
+      selectedSol: number;
+    };
+  };
+  selectedRover: Rover;
 }

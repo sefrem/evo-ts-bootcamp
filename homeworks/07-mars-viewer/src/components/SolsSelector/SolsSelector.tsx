@@ -1,10 +1,10 @@
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   getPhotos,
   selectCurrentSol,
-  setSelectedSol,
-} from "../features/mars/marsSlice";
+  setSol,
+} from "../../features/mars/marsSlice";
 
 const SolsSelector: React.VFC = () => {
   const dispatch = useAppDispatch();
@@ -17,7 +17,7 @@ const SolsSelector: React.VFC = () => {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput(+e.target.value);
-    dispatch(setSelectedSol(+e.target.value));
+    dispatch(setSol(+e.target.value));
   };
 
   return (

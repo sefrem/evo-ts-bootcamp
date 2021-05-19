@@ -6,7 +6,7 @@ import Photo from "../Photo/Photo";
 import styles from "./Photos.module.css";
 
 type Props = {
-  photos: Sol[] | null;
+  photos: Sol[];
 };
 
 const Photos: React.VFC<Props> = ({ photos }) => {

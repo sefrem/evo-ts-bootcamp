@@ -1,6 +1,6 @@
 import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-import { selectAllPhotos } from "../mars/marsSlice";
+import { selectAllRoversPhotos } from "../mars/marsSlice";
 import { RootState } from "../../app/store";
 
 const initialState: number[] = [];
@@ -23,7 +23,7 @@ export const { addToFavorites, removeFromFavorites } = favoritesSlice.actions;
 export const selectFavorites = (state: RootState): number[] => state.favorites;
 
 export const selectFavoritePhotos = createSelector(
-  selectAllPhotos,
+  selectAllRoversPhotos,
   selectFavorites,
   (photos, favoriteIds) => {
     return photos?.filter(({ id }) => favoriteIds?.includes(id));
