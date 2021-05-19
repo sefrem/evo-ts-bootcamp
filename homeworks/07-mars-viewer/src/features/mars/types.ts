@@ -24,7 +24,7 @@ interface Sols {
 
 export interface MarsState {
   sols: Sols;
-  photos: Sol[];
+  photos: Sol[] | null;
   status: "idle" | "loading" | "failed";
   selectedSol: number;
 }

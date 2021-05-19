@@ -26,7 +26,7 @@ export const selectFavoritePhotos = createSelector(
   selectAllPhotos,
   selectFavorites,
   (photos, favoriteIds) => {
-    return photos.filter(({ id }) => favoriteIds?.includes(id));
+    return photos?.filter(({ id }) => favoriteIds?.includes(id));
   }
 );
 

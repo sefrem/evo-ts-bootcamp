@@ -15,7 +15,7 @@ const RoutesSelector: React.VFC = () => {
   const setPhotosRoute = () => dispatch(setRoute("gallery"));
   const setFavoritesRoute = () => dispatch(setRoute("favorites"));
   return (
-    <div>
+    <p>
       <span
         onClick={setPhotosRoute}
         className={clsx(
@@ -35,7 +35,7 @@ const RoutesSelector: React.VFC = () => {
       >
         Favorites
       </span>
-    </div>
+    </p>
   );
 };
 

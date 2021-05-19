@@ -6,7 +6,7 @@ import Photo from "../Photo/Photo";
 import styles from "./Photos.module.css";
 
 type Props = {
-  photos: Sol[];
+  photos: Sol[] | null;
 };
 
 const Photos: React.VFC<Props> = ({ photos }) => {
@@ -27,4 +27,4 @@ const Photos: React.VFC<Props> = ({ photos }) => {
   );
 };
 
-export default Photos;
+export default React.memo(Photos);
