@@ -6,8 +6,8 @@ import RoverSelector from "../../components/RoverSelector/RoverSelector";
 const Gallery: React.VFC = () => {
   return (
     <>
-      <SolsSelector />
       <RoverSelector />
+      <SolsSelector />
       <PhotosContainer />
     </>
   );
