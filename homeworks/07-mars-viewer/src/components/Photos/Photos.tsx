@@ -34,4 +34,4 @@ const Photos: React.VFC<Props> = ({ photos }) => {
   );
 };
 
-export default React.memo(Photos);
+export default Photos;

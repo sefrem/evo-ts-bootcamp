@@ -88,8 +88,11 @@ export const selectAllRoversPhotos = (state: RootState): Sol[] => [
 export const selectCurrentSol = (state: RootState): number =>
   state.mars.rover[state.mars.selectedRover].selectedSol;
 
-export const selectLoadedSols = (state: RootState): string[] =>
-  Object.keys(state.mars.rover[state.mars.selectedRover].sols);
+export const selectLoadedSolsForCurrentDay = (state: RootState): boolean => {
+  return Object.keys(state.mars.rover[state.mars.selectedRover].sols).includes(
+    selectCurrentSol(state).toString()
+  );
+};
 
 export const selectCurrentSolPhotos = createSelector(
   selectRoverPhotos,

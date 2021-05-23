@@ -47,6 +47,7 @@ const Photo: React.VFC<Props> = ({
             left: "25%",
           },
         }}
+        ariaHideApp={false}
       >
         <img className={styles.photoZoomed} src={photoSrc} alt="" />
         <div>Date: {date}</div>

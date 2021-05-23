@@ -1,24 +1,22 @@
 import React from "react";
 import { useAppSelector } from "../../app/hooks";
 import {
-  selectCurrentSol,
   selectCurrentSolPhotos,
-  selectLoadedSols,
+  selectLoadedSolsForCurrentDay,
   selectStatus,
 } from "../../features/mars/marsSlice";
 import Photos from "../Photos/Photos";
 
 const PhotosContainer: React.VFC = () => {
   const photos = useAppSelector(selectCurrentSolPhotos);
-  const loadedSols = useAppSelector(selectLoadedSols);
+  const loadedSolsForCurrentDay = useAppSelector(selectLoadedSolsForCurrentDay);
   const status = useAppSelector(selectStatus);
-  const currentSol = useAppSelector(selectCurrentSol);
 
   if (status === "loading") {
     return <p>Loading...</p>;
   }
 
-  if (!loadedSols.includes(currentSol.toString())) {
+  if (!loadedSolsForCurrentDay) {
     return <p>Photos are not loaded</p>;
   }
 
@@ -29,4 +27,4 @@ const PhotosContainer: React.VFC = () => {
   return <Photos photos={photos} />;
 };
 
-export default React.memo(PhotosContainer);
+export default PhotosContainer;
