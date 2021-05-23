@@ -9,21 +9,18 @@ import {
 const SolsSelector: React.VFC = () => {
   const dispatch = useAppDispatch();
   const currentSol = useAppSelector(selectCurrentSol);
-  const [input, setInput] = React.useState(currentSol);
-
   const fetchSolPhotos = (): void => {
     dispatch(getPhotos());
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setInput(+e.target.value);
     dispatch(setSol(+e.target.value));
   };
 
   return (
     <>
       <header>Select Sol and press "load"!</header>
-      <input value={input} onChange={onChange} type="number" />
+      <input value={currentSol} onChange={onChange} type="number" />
       <button onClick={fetchSolPhotos}>Load</button>
     </>
   );
