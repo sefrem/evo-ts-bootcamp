@@ -2,8 +2,14 @@ import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { selectAllRoversPhotos } from "../mars/marsSlice";
 import { RootState } from "../../app/store";
+import {
+  addToLocalStorage,
+  getFromLocalStorage,
+} from "../../urils/localStorage";
 
-const initialState: number[] = [];
+const LOCALSTORAGE_KEY = "favoriteMarsPhotos";
+
+const initialState: number[] = getFromLocalStorage(LOCALSTORAGE_KEY) || [];
 
 export const favoritesSlice = createSlice({
   name: "favorites",
@@ -11,9 +17,12 @@ export const favoritesSlice = createSlice({
   reducers: {
     addToFavorites: (state, action: PayloadAction<number>) => {
       state.push(action.payload);
+      addToLocalStorage(LOCALSTORAGE_KEY, state);
     },
     removeFromFavorites: (state, action: PayloadAction<number>) => {
-      return state.filter((id) => id !== action.payload);
+      const newState = state.filter((id) => id !== action.payload);
+      addToLocalStorage(LOCALSTORAGE_KEY, newState);
+      return newState;
     },
   },
 });
