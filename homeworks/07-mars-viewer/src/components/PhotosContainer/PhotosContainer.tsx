@@ -24,7 +24,12 @@ const PhotosContainer: React.VFC = () => {
     return <p>No photos for this sol</p>;
   }
 
-  return <Photos photos={photos} />;
+  return (
+    <>
+      <p>Click on photo to enlarge</p>
+      <Photos photos={photos} />;
+    </>
+  );
 };
 
 export default PhotosContainer;
