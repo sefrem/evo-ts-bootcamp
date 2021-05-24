@@ -14,7 +14,9 @@ const SolsSelector: React.VFC = () => {
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    dispatch(setSol(+e.target.value));
+    const value = +e.target.value;
+    if (value < 0) return;
+    dispatch(setSol(value));
   };
 
   return (
