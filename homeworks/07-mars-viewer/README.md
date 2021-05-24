@@ -8,5 +8,5 @@ Run locally with
 ### `yarn start`
 
 
-Check the deployed version [https://eloquent-jackson-fb0120.netlify.app/](http://localhost:3000) 
+Check the deployed version [https://eloquent-jackson-fb0120.netlify.app/](https://eloquent-jackson-fb0120.netlify.app/) 
 
