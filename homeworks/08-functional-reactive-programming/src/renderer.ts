@@ -1,15 +1,18 @@
 import window from "./assets/window.png";
 import wall from "./assets/wall.png";
+import happyCat from "./assets/happy_cat.png";
+import darkCat from "./assets/cat_dark.png";
+import beigeCat from "./assets/cat_beige.png";
+import dottedCat from "./assets/cat_dots.png";
 
 const canvas = <HTMLCanvasElement>document.getElementById("canvas");
 const ctx = canvas.getContext("2d")!;
 export const generateBtn = document.getElementById("generate")!;
 export const score = document.getElementById("score")!;
-export const countdown = document.getElementById("countdown")!;
 
 const startY = 50;
 const NUMBER_OF_ROWS = 10;
-
+const images: string[] = [happyCat, darkCat, beigeCat, dottedCat];
 const random = (): number => Math.floor(Math.random() * NUMBER_OF_ROWS);
 
 const drawInitialImg = (image: string, coords: number[]): void => {
@@ -57,4 +60,14 @@ export const checkIfClicked = ([event, coords]: [
   const xDiff = offsetX - targetX;
   const YDiff = offsetY - targetY;
   return xDiff > 0 && xDiff < 50 && YDiff > 0 && YDiff < 50;
+};
+
+export const resetGame = () => (score.innerHTML = "0");
+
+export const getHappyCats = (): HTMLImageElement[] => {
+  return images.map((image) => {
+    const img = new Image();
+    img.src = image;
+    return img;
+  });
 };
