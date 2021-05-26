@@ -1,12 +1,4 @@
-import {
-  defer,
-  fromEvent,
-  interval,
-  of,
-  Subscription,
-  combineLatest,
-  Observable,
-} from "rxjs";
+import { defer, fromEvent, interval, of, Subscription, Observable } from "rxjs";
 import {
   filter,
   map,
@@ -57,7 +49,8 @@ const renderCat$: Observable<number[]> = interval$.pipe(
 
 const click$: Observable<MouseEvent> = fromEvent<MouseEvent>(document, "click");
 
-const score$: Observable<number> = combineLatest([click$, renderCat$]).pipe(
+const score$: Observable<number> = click$.pipe(
+  withLatestFrom(renderCat$),
   filter(checkIfClicked),
   tap(([_, coords]) =>
     drawImg(happyCats[Math.floor(Math.random() * happyCats.length)], coords)
