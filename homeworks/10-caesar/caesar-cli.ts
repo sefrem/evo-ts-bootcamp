@@ -1,10 +1,11 @@
-const { pipeline } = require('stream');
 import { Command } from 'commander';
-import { caesarCipher } from './caesarCipher';
 import * as fs from 'fs';
+const { pipeline } = require('stream');
+
+import { caesarCipher } from './caesarCipher';
 import { Cipher, engAlphabet, isCipher, isLang, rusAlphabet } from './types';
 
-const program = new Command();
+export const program = new Command();
 
 const setInput = (input: string) => (input ? fs.createReadStream(input) : process.stdin);
 const setOutput = (output: string) => (output && fs.existsSync(output) ? fs.createWriteStream(output) : process.stdout);
