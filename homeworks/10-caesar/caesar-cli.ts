@@ -2,7 +2,7 @@ const { pipeline } = require('stream');
 import { Command } from 'commander';
 import { caesarCipher } from './caesarCipher';
 import * as fs from 'fs';
-import { Cipher, engAlphabet, isCipher, isLang, rusAlphabet } from '../types';
+import { Cipher, engAlphabet, isCipher, isLang, rusAlphabet } from './types';
 
 const program = new Command();
 

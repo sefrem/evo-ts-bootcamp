@@ -1,4 +1,4 @@
-import { Alphabet, Cipher } from '../types';
+import { Alphabet, Cipher } from './types';
 
 export const caesarCipher = (alphabet: Alphabet, encode: Cipher, shift: number) => (chunk: string): string => {
     let isUppercase = false;

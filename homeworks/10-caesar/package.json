@@ -1,11 +1,8 @@
 {
   "name": "10-caesar",
   "version": "1.0.0",
-  "main": "src/caesar-cli.ts",
+  "main": "caesar-cli.ts",
   "license": "MIT",
-  "scripts": {
-
-  },
   "dependencies": {
     "commander": "^7.2.0",
     "typescript": "^4.3.2"
