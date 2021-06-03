@@ -23,24 +23,26 @@ const drawInitialImg = (image: string, coords: number[]): void => {
   img.src = image;
 };
 
-export const genField = (): number[][] => {
+export const getWindowsCoords = () => {
   const coords: number[][] = [];
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let j = 0; j < 10; j++) {
     for (let i = 0; i < NUMBER_OF_ROWS; i++) {
       if (i === random()) {
-        drawInitialImg(window, [50 * i, startY * j]);
         coords.push([50 * i, startY * j]);
-        continue;
       }
-      drawInitialImg(wall, [50 * i, startY * j]);
     }
   }
-
   return coords;
 };
 
+export const drawWindows = (coords: number[][]): void => {
+  for (const [x, y] of coords) {
+    drawInitialImg(window, [x, y]);
+  }
+};
+
 export const generateEmptyField = (): void => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   for (let j = 0; j < 10; j++) {
     for (let i = 0; i < NUMBER_OF_ROWS; i++) {
       drawInitialImg(wall, [50 * i, startY * j]);
@@ -48,8 +50,9 @@ export const generateEmptyField = (): void => {
   }
 };
 
-export const drawImg = (image: HTMLImageElement, coords: number[]): void =>
+export const drawImg = (image: HTMLImageElement, coords: number[]): void => {
   ctx.drawImage(image, coords[0], coords[1] + 10);
+};
 
 export const checkIfClicked = ([event, coords]: [
   event: MouseEvent,
@@ -62,7 +65,7 @@ export const checkIfClicked = ([event, coords]: [
   return xDiff > 0 && xDiff < 50 && YDiff > 0 && YDiff < 50;
 };
 
-export const resetGame = () => (score.innerHTML = "0");
+export const resetScore = () => (score.innerHTML = "0");
 
 export const getHappyCats = (): HTMLImageElement[] => {
   return images.map((image) => {

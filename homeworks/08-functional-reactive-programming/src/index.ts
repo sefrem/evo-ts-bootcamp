@@ -1,4 +1,4 @@
-import { defer, fromEvent, interval, of, Subscription, Observable } from "rxjs";
+import { defer, fromEvent, interval, of, Observable, Subject } from "rxjs";
 import {
   filter,
   map,
@@ -8,16 +8,19 @@ import {
   withLatestFrom,
   mapTo,
   scan,
+  takeUntil,
+  delay,
 } from "rxjs/operators";
 import {
   checkIfClicked,
   drawImg,
   generateBtn,
   generateEmptyField,
-  genField,
+  getWindowsCoords,
   getHappyCats,
-  resetGame,
+  resetScore,
   score,
+  drawWindows,
 } from "./renderer";
 
 import window from "./assets/window.png";
@@ -29,10 +32,13 @@ const happyCats = getHappyCats();
 
 const windowImg = new Image();
 windowImg.src = window;
+
 const sadCatImg = new Image();
 sadCatImg.src = sadCat;
 
-const values$: Observable<number[][]> = defer(() => of(genField()));
+const values$: Observable<number[][]> = defer(() =>
+  of(getWindowsCoords())
+).pipe(tap(generateEmptyField), delay(0), tap(drawWindows));
 const interval$: Observable<number> = interval(1000);
 
 const renderCat$: Observable<number[]> = interval$.pipe(
@@ -49,6 +55,8 @@ const renderCat$: Observable<number[]> = interval$.pipe(
 
 const click$: Observable<MouseEvent> = fromEvent<MouseEvent>(document, "click");
 
+const stopSignal$: Subject<number> = new Subject();
+
 const score$: Observable<number> = click$.pipe(
   withLatestFrom(renderCat$),
   filter(checkIfClicked),
@@ -57,17 +65,14 @@ const score$: Observable<number> = click$.pipe(
   ),
   mapTo(1),
   scan((value, count) => count + value, 0),
-  tap((value) => (score.innerHTML = value.toString()))
+  tap((value) => (score.innerHTML = value.toString())),
+  takeUntil(stopSignal$)
 );
 
-let subscription: Subscription | null = null;
-
 fromEvent(generateBtn, "click").subscribe(() => {
-  if (subscription) {
-    subscription.unsubscribe();
-    resetGame();
-  }
-  subscription = score$.subscribe();
+  resetScore();
+  stopSignal$.next(0);
+  score$.subscribe();
 });
 
 generateEmptyField();
