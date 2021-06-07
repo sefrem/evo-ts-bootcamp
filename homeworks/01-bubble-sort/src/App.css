@@ -1,0 +1,19 @@
+.app{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.elements {
+  display: flex;
+  align-items: baseline;
+}
+
+.status {
+  margin-top: 10px;
+}
+
+
+
