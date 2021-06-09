@@ -1,0 +1,11 @@
+.regular {
+    text-decoration: underline;
+    color: #00f;
+    cursor: pointer;
+}
+
+.active {
+    text-decoration: none;
+    color: #000;
+    cursor: auto;
+}
