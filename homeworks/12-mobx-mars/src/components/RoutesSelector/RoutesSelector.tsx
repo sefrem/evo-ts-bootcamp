@@ -8,8 +8,8 @@ import styles from "./RoutesSelector.module.css";
 const RoutesSelector: React.VFC = observer(() => {
   const routesStore = useStore("RoutesStore");
 
-  const setPhotosRoute = () => routesStore.selectRoute("gallery");
-  const setFavoritesRoute = () => routesStore.selectRoute("favorites");
+  const setPhotosRoute = () => routesStore.setRoute("gallery");
+  const setFavoritesRoute = () => routesStore.setRoute("favorites");
   return (
     <p>
       <span

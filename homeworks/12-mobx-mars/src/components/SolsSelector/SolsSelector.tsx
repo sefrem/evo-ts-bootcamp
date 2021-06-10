@@ -15,12 +15,20 @@ const SolsSelector: React.VFC = observer(() => {
   return (
     <>
       <header>Select Sol and press "load"!</header>
-      <input
-        value={mainStore.currentRover.selectedSol}
-        onChange={onChange}
-        type="number"
-      />
-      <button onClick={mainStore.currentRover.getPhotos}>Load</button>
+      <div>
+        <input
+          value={mainStore.currentRover.selectedSol}
+          onChange={onChange}
+          type="number"
+        />
+        <button onClick={mainStore.currentRover.getPhotos}>Load</button>
+      </div>
+      <div>
+        <div>Get latest photos of the selected rover</div>
+        <button onClick={mainStore.currentRover.getLatestPhotos}>
+          Get latest
+        </button>
+      </div>
     </>
   );
 });

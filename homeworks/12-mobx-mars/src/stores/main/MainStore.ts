@@ -50,5 +50,6 @@ export default class MainStore {
 
   removeFromFavorites(id: number): void {
     this.favorites.splice(this.favorites.indexOf(id), 1);
+    addToLocalStorage(FAVORITE_PHOTOS, this.favorites);
   }
 }

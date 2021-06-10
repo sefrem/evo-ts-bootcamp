@@ -8,6 +8,14 @@ export default class PhotosApi {
     const { photos } = await response.json();
     return normalize(photos);
   };
+
+  getLatestPhotos = async (rover: string) => {
+    const response = await fetch(
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/latest_photos?api_key=${process.env.REACT_APP_API_KEY}`
+    );
+    const { latest_photos } = await response.json();
+    return normalize(latest_photos);
+  };
 }
 
 const normalize = (data: any[]): IPhotos[] => {

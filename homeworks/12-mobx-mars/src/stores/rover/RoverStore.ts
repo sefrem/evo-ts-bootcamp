@@ -1,13 +1,15 @@
+import { makeAutoObservable, runInAction } from "mobx";
+
 import PhotosApi from "../../api";
 import { IPhotos, Rover } from "../main/MainTypes";
-import { makeAutoObservable, runInAction } from "mobx";
+import { isNumber } from "../../utils/isNumber";
 
 export default class RoverStore {
   private photosApi: PhotosApi;
   name: Rover;
   photos: IPhotos[] = [];
-  selectedSol: number = 1;
-  sols: Record<number, number[] | null> = { [this.selectedSol]: null };
+  selectedSol: number | string = 1;
+  sols: Record<number | string, number[] | null> = { [this.selectedSol]: null };
   loader: boolean = false;
 
   constructor(name: Rover) {
@@ -33,19 +35,44 @@ export default class RoverStore {
   }
 
   getPhotos(): void {
-    this.loader = true;
+    if (this.selectedSolContent) return;
+    if (!isNumber(this.selectedSol)) return;
+
+    this.setLoader(true);
     this.photosApi
-      .getPhotos(this.name, this.selectedSol)
+      .getPhotos(this.name, this.selectedSol as number)
       .then((data) => {
         runInAction(() => {
           this.photos.push(...data);
           this.sols[this.selectedSol] = data.map(({ id }) => id);
         });
       })
-      .finally(() => (this.loader = false));
+      .finally(() => this.setLoader(false));
   }
 
-  setSol(sol: number): void {
+  getLatestPhotos(): void {
+    if (this.sols["latest"]) {
+      this.setSol("latest");
+      return;
+    }
+    this.setLoader(true);
+    this.photosApi
+      .getLatestPhotos(this.name)
+      .then((data) => {
+        runInAction(() => {
+          this.photos.push(...data);
+          this.sols["latest"] = data.map(({ id }) => id);
+        });
+        this.setSol("latest");
+      })
+      .finally(() => this.setLoader(false));
+  }
+
+  setLoader(value: boolean): void {
+    this.loader = value;
+  }
+
+  setSol(sol: number | string): void {
     this.selectedSol = sol;
   }
 }

@@ -1,8 +1,8 @@
 import { createContext } from "../utils/storeUtils";
 import MainStore from "./main/MainStore";
-import RoutesStore from "./routes/RoutesStore";
+import RouterStore from "./router/RouterStore";
 
 export const { StoreProvider, useStore } = createContext({
   MainStore: new MainStore(),
-  RoutesStore: new RoutesStore(),
+  RoutesStore: new RouterStore(),
 });
