@@ -1,6 +1,6 @@
 import { IDisposer } from "mobx-utils/lib/utils";
 import { fromResource } from "mobx-utils";
-import history from "history/browser";
+import history from "history/hash";
 
 function createObservableHistory() {
   let currentSubscription: IDisposer;

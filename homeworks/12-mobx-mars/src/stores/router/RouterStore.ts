@@ -1,5 +1,5 @@
 import { autorun, makeAutoObservable, reaction } from "mobx";
-import history from "history/browser";
+import history from "history/hash";
 
 import { myObservableHistory } from "../../utils/observableHistory";
 
