@@ -14,5 +14,5 @@ Run locally with
 ### `yarn start`
 
 
-Check the deployed version []() 
+Check the deployed version [https://frosty-lamarr-a4efe9.netlify.app/](https://frosty-lamarr-a4efe9.netlify.app/) 
 
