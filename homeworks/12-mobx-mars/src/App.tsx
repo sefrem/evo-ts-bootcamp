@@ -8,12 +8,12 @@ import { routes } from "./routes/routes";
 import "./App.css";
 
 const App: React.VFC = observer(() => {
-  const routesStore = useStore("RoutesStore");
+  const routerStore = useStore("RouterStore");
   return (
     <div className="App">
       <RoutesSelector />
       <Suspense fallback={<div>Loading...</div>}>
-        {routes(routesStore)}
+        {routes(routerStore)}
       </Suspense>
     </div>
   );

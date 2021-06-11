@@ -4,5 +4,5 @@ import RouterStore from "./router/RouterStore";
 
 export const { StoreProvider, useStore } = createContext({
   MainStore: new MainStore(),
-  RoutesStore: new RouterStore(),
+  RouterStore: new RouterStore(),
 });

@@ -6,17 +6,17 @@ import { useStore } from "../../stores";
 import styles from "./RoutesSelector.module.css";
 
 const RoutesSelector: React.VFC = observer(() => {
-  const routesStore = useStore("RoutesStore");
+  const routerStore = useStore("RouterStore");
 
-  const setPhotosRoute = () => routesStore.setRoute("gallery");
-  const setFavoritesRoute = () => routesStore.setRoute("favorites");
+  const setPhotosRoute = () => routerStore.setRoute("gallery");
+  const setFavoritesRoute = () => routerStore.setRoute("favorites");
   return (
     <p>
       <span
         onClick={setPhotosRoute}
         className={clsx(
           styles.regular,
-          routesStore.route === "gallery" && styles.active
+          routerStore.route === "gallery" && styles.active
         )}
       >
         Photos
@@ -26,7 +26,7 @@ const RoutesSelector: React.VFC = observer(() => {
         onClick={setFavoritesRoute}
         className={clsx(
           styles.regular,
-          routesStore.route === "favorites" && styles.active
+          routerStore.route === "favorites" && styles.active
         )}
       >
         Favorites
