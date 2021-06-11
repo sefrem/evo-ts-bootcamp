@@ -7,7 +7,7 @@ import { useStore } from "../../stores";
 const PhotosContainer: React.VFC = observer(() => {
   const mainStore = useStore("MainStore");
 
-  if (mainStore.currentRover.loader) {
+  if (mainStore.currentRover.loading) {
     return <p>Loading...</p>;
   }
 

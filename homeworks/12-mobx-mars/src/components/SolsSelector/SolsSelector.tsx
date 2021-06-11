@@ -3,6 +3,8 @@ import { observer } from "mobx-react-lite";
 
 import { useStore } from "../../stores";
 
+import styles from "./SolsSelector.module.css";
+
 const SolsSelector: React.VFC = observer(() => {
   const mainStore = useStore("MainStore");
 
@@ -13,23 +15,31 @@ const SolsSelector: React.VFC = observer(() => {
   };
 
   return (
-    <>
-      <header>Select Sol and press "load"!</header>
+    <div className={styles.solsSelector}>
       <div>
+        <p>Select Sol and press "load"!</p>
         <input
           value={mainStore.currentRover.selectedSol}
           onChange={onChange}
           type="number"
         />
-        <button onClick={mainStore.currentRover.getPhotos}>Load</button>
+        <button
+          onClick={mainStore.currentRover.getPhotos}
+          disabled={mainStore.currentRover.loading}
+        >
+          Load
+        </button>
       </div>
       <div>
-        <div>Get latest photos of the selected rover</div>
-        <button onClick={mainStore.currentRover.getLatestPhotos}>
+        <p>Get latest photos of the selected rover</p>
+        <button
+          onClick={mainStore.currentRover.getLatestPhotos}
+          disabled={mainStore.currentRover.loading}
+        >
           Get latest
         </button>
       </div>
-    </>
+    </div>
   );
 });
 

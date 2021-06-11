@@ -3,16 +3,9 @@ import { observer } from "mobx-react-lite";
 
 import { Rover } from "../../stores/main/MainTypes";
 import { useStore } from "../../stores";
+import { assertIsRover } from "../../utils/assertIsRover";
 
 import styles from "./RoverSelector.module.css";
-
-function assertIsRover(value: string): value is Rover {
-  const roverValues = ["perseverance", "opportunity", "curiosity", "spirit"];
-  if (!roverValues.includes(value)) {
-    throw new Error("Not a Rover");
-  }
-  return true;
-}
 
 const RoverSelector: React.VFC = observer(() => {
   const mainStore = useStore("MainStore");

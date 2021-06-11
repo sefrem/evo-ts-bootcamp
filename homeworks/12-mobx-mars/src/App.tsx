@@ -3,9 +3,9 @@ import { observer } from "mobx-react-lite";
 
 import RoutesSelector from "./components/RoutesSelector/RoutesSelector";
 import { useStore } from "./stores";
+import { routes } from "./routes/routes";
 
 import "./App.css";
-import { manageRoutes } from "./utils/manageRoutes";
 
 const App: React.VFC = observer(() => {
   const routesStore = useStore("RoutesStore");
@@ -13,7 +13,7 @@ const App: React.VFC = observer(() => {
     <div className="App">
       <RoutesSelector />
       <Suspense fallback={<div>Loading...</div>}>
-        {manageRoutes(routesStore)}
+        {routes(routesStore)}
       </Suspense>
     </div>
   );

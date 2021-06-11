@@ -1,9 +1,10 @@
 import React from "react";
 import RouterStore from "../stores/router/RouterStore";
-import Gallery from "../screens/Gallery/Gallery";
-const Favorites = React.lazy(() => import("../screens/Favorites/Favorites"));
 
-export const manageRoutes = (store: RouterStore) => {
+const Favorites = React.lazy(() => import("../screens/Favorites/Favorites"));
+const Gallery = React.lazy(() => import("../screens/Gallery/Gallery"));
+
+export const routes = (store: RouterStore) => {
   switch (store.route) {
     case "gallery":
       return <Gallery />;
