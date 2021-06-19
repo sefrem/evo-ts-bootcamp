@@ -9,5 +9,5 @@ Run with:
 ### `yarn start`
 
 Check out the deployed version:
-[http://localhost:3000](http://localhost:3000) to view it in the browser.
+[https://eloquent-golick-e56eb9.netlify.app/](https://eloquent-golick-e56eb9.netlify.app/) to view it in the browser.
 
