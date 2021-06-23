@@ -1,9 +1,9 @@
-import { Card } from '../types/types';
+import { ICard, Suits } from '../types/types';
 
-export function createDeck(): Card[] {
-    const deck: Card[] = [];
+export function createDeck(): ICard[] {
+    const deck: ICard[] = [];
     const ranks = ['A', 'K', 'Q', 'J', 10, 9, 8, 7, 6, 5, 4, 3, 2];
-    const suits = ['S', 'H', 'D', 'C'];
+    const suits: Suits[] = ['spades', 'hearts', 'diamonds', 'clubs'];
 
     ranks.forEach(rank => {
         suits.forEach(suit => {

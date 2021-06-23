@@ -2,12 +2,12 @@ import { makeAutoObservable, runInAction } from 'mobx';
 
 import { createDeck } from '../utils/createDeck';
 import { shuffleArray } from '../utils/shuffleArray';
-import { Card } from '../types/types';
+import { ICard } from '../types/types';
 
-export default class MainStore {
-    deck: Card[] = [];
-    dealer: Card[] = [];
-    player: Card[] = [];
+export default class GameStore {
+    deck: ICard[] = [];
+    dealer: ICard[] = [];
+    player: ICard[] = [];
 
     constructor() {
         makeAutoObservable(

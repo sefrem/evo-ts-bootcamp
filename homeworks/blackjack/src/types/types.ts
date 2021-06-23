@@ -1,4 +1,6 @@
-export interface Card {
+export interface ICard {
     rank: number | string;
-    suit: string;
+    suit: Suits;
 }
+
+export type Suits = 'hearts' | 'spades' | 'diamonds' | 'clubs';

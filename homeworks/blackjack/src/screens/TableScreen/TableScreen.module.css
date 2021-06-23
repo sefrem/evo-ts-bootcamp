@@ -1,0 +1,7 @@
+
+.field {
+    width: 800px;
+    height: 600px;
+    background: radial-gradient(var(--table-color-1), var(--table-color-2), var(--table-color-3));
+
+}

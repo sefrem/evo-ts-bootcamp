@@ -1,18 +1,14 @@
-import React, { useEffect } from 'react';
-import './App.css';
-import { useStore } from './stores';
+import React from 'react';
 import { observer } from 'mobx-react-lite';
 
-const App: React.FC = observer(() => {
-    const mainStore = useStore('MainStore');
+import TableScreen from './screens/TableScreen/TableScreen';
 
-    useEffect(() => {
-        mainStore.startGame();
-    }, []);
+import styles from './App.module.css';
 
+const App: React.VFC = observer(() => {
     return (
-        <div className="App">
-            <button onClick={mainStore.deal}>Deal</button>
+        <div className={styles.App}>
+            <TableScreen />
         </div>
     );
 });

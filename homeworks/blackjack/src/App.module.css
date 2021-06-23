@@ -1,0 +1,17 @@
+
+:root {
+  --table-color-1: #129464;
+  --table-color-2: #02774D;
+  --table-color-3: #005834;
+  --card: #f6f6f6;
+  --card-border: #666666;
+  --card-red: red;
+}
+
+.App {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
