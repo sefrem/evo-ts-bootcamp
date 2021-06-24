@@ -1,0 +1,29 @@
+
+.hand {
+    position: relative;
+    width: fit-content;
+}
+
+.cardInHand {
+    position: absolute;
+}
+
+.cardInHand-2 {
+    left: 30px;
+}
+
+.cardInHand-3 {
+    left: 60px;
+}
+
+.cardInHand-4 {
+    left: 90px;
+}
+
+.cardInHand-5 {
+    left: 120px;
+}
+
+.cardInHand-6 {
+    left: 150px;
+}

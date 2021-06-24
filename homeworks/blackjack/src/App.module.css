@@ -6,12 +6,14 @@
   --card: #f6f6f6;
   --card-border: #666666;
   --card-red: red;
+  --card-position: 0;
 }
 
 .App {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 }
 
 
