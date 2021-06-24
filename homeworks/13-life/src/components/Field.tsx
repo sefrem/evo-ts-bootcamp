@@ -40,8 +40,9 @@ const Field = observer(() => {
                 >
                     {lifeStore.status === 'in progress' ? 'Pause Game' : 'Start Game'}
                 </button>
-                <button onClick={lifeStore.clearField}>Clear Field</button>
+                <button onClick={lifeStore.clearField}>Set Empty Field</button>
             </div>
+            <div style={{ marginTop: 20 }}>Note: You could add your own cells, just click on the field</div>
         </div>
     );
 });

@@ -101,7 +101,7 @@ export default class LifeStore {
         this.setStatus('idle');
         this.initField();
         this.fillField();
-        this.interval && clearInterval(this.interval);
+        this.endGame();
     }
 
     startGame() {
@@ -119,6 +119,7 @@ export default class LifeStore {
         this.setStatus('idle');
         this.initEmptyField();
         this.fillField();
+        this.endGame();
     }
 
     addCell(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>): void {
@@ -130,6 +131,10 @@ export default class LifeStore {
 
     pauseGame() {
         this.setStatus('paused');
+        this.interval && clearInterval(this.interval);
+    }
+
+    endGame() {
         this.interval && clearInterval(this.interval);
     }
 
