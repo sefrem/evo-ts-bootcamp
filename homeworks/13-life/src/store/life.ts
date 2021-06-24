@@ -37,6 +37,10 @@ export default class LifeStore {
             .map(() => new Array(this.cellsInRow).fill(null).map(() => Math.floor(Math.random() * 2)));
     }
 
+    initEmptyField() {
+        this.grid = new Array(this.cellsInCol).fill(null).map(() => new Array(this.cellsInRow).fill(null));
+    }
+
     fillField() {
         if (!this.ctx) return;
         for (let i = 0; i < this.grid.length; i++) {
@@ -82,6 +86,7 @@ export default class LifeStore {
                 }
             }
         }
+        this.checkStatus();
         return nextGen;
     }
 
@@ -108,6 +113,12 @@ export default class LifeStore {
 
             this.fillField();
         }, this.timeout);
+    }
+
+    clearField() {
+        this.setStatus('idle');
+        this.initEmptyField();
+        this.fillField();
     }
 
     addCell(event: React.MouseEvent<HTMLCanvasElement, MouseEvent>): void {

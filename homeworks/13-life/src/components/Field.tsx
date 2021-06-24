@@ -40,6 +40,7 @@ const Field = observer(() => {
                 >
                     {lifeStore.status === 'in progress' ? 'Pause Game' : 'Start Game'}
                 </button>
+                <button onClick={lifeStore.clearField}>Clear Field</button>
             </div>
         </div>
     );
