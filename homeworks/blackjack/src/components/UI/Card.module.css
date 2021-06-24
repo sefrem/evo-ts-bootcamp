@@ -6,7 +6,7 @@
     background: var(--card);
     border-radius: 0.3em;
     border: 1px solid var(--card-border);
-    box-shadow: 0.07em 0.07em 0.07em 0.07em rgb(20 20 20 / 40%);
+    box-shadow: 0.07em 0.07em 0.07em 0.07em rgba(20, 20, 20, 0.4);
 }
 
 .cardValues {
