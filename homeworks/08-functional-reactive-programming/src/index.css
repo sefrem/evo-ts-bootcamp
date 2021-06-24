@@ -1,0 +1,17 @@
+
+#canvas {
+    cursor: url('assets/hand.png'), default;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+}
+.game {
+    margin: 0 auto;
+}
+
+.score {
+    display: flex;
+    justify-content: space-between;
+}
