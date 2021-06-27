@@ -1,7 +1,8 @@
 
 .hand {
     position: relative;
-    width: fit-content;
+    min-width: calc(12em * 0.71);
+    height: 13em;
 }
 
 .cardInHand {
@@ -10,20 +11,33 @@
 
 .cardInHand-2 {
     left: 30px;
+    transform: rotate(3deg);
 }
 
 .cardInHand-3 {
-    left: 60px;
+    left: 70px;
+    transform: rotate(-4deg);
 }
 
 .cardInHand-4 {
-    left: 90px;
+    left: 100px;
+    transform: rotate(4deg);
 }
 
 .cardInHand-5 {
-    left: 120px;
+    left: 135px;
+    transform: rotate(-1deg);
 }
 
 .cardInHand-6 {
-    left: 150px;
+    left: 170px;
+    transform: rotate(-3deg);
+}
+
+.cardInHand-7 {
+    left: 200px;
+}
+
+.cardInHand-8 {
+    left: 230px;
 }

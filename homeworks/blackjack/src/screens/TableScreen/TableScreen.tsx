@@ -1,11 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 
-import Dealer from '../../components/Dealer/Dealer';
-import Player from '../../components/Player/Player';
+import { useStore } from '../../stores';
+import Hand from '../../components/UI/Hand/Hand';
 
 import styles from './TableScreen.module.css';
-import { useStore } from '../../stores';
 
 const TableScreen: React.VFC = observer(() => {
     const gameStore = useStore('GameStore');
@@ -16,10 +15,27 @@ const TableScreen: React.VFC = observer(() => {
 
     return (
         <div className={styles.field}>
-            <button onClick={gameStore.deal}>Deal</button>
-            <Dealer />
+            <div>
+                <button onClick={gameStore.deal}>Deal</button>
+                <button onClick={gameStore.resetGame}>Reset</button>
+            </div>
 
-            <Player />
+            <div className={styles.dealer}>
+                <span>Dealer:</span>
+                <span>{gameStore.players['0'].score}</span>
+                <Hand data={gameStore.players['0'].hand} hideLast={gameStore.activePlayer !== '0'} />
+            </div>
+            <div className={styles.player}>
+                <span>{gameStore.players['1'].name}: </span>
+                <span>{gameStore.players['1'].score}</span>
+                <Hand data={gameStore.players['1'].hand} />
+                {gameStore.activePlayer === '1' && (
+                    <div>
+                        <button onClick={gameStore.hit}>Hit</button>
+                        <button onClick={gameStore.stand}>Stand</button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 });

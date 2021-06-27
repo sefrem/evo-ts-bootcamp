@@ -1,7 +1,7 @@
-import { ICard, Suits } from '../types/types';
+import { Card, Suits } from '../types/types';
 
-export function createDeck(): ICard[] {
-    const deck: ICard[] = [];
+export function createDeck(): Card[] {
+    const deck: Card[] = [];
     const ranks = ['A', 'K', 'Q', 'J', 10, 9, 8, 7, 6, 5, 4, 3, 2];
     const suits: Suits[] = ['spades', 'hearts', 'diamonds', 'clubs'];
 

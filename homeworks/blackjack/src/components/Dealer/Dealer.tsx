@@ -9,7 +9,7 @@ const Dealer: React.VFC = observer(() => {
     return (
         <div>
             <span>Dealer's hand:</span>
-            <Hand data={gameStore.dealer} />
+            {/*<Hand data={gameStore.dealer} />*/}
         </div>
     );
 });
