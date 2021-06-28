@@ -7,6 +7,7 @@
 
 .cardInHand {
     position: absolute;
+   animation: dealCard 0.2s
 }
 
 .cardInHand-2 {
@@ -40,4 +41,9 @@
 
 .cardInHand-8 {
     left: 230px;
+}
+
+@keyframes dealCard {
+    from {transform: translate(100px, -1000px)}
+    to {transform: translate(0, 0)}
 }

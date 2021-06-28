@@ -24,6 +24,8 @@ export default class GameStore {
     private deck: Card[] = [];
     activePlayer: Players = '1';
     players: Record<Players, Player> = initialState;
+    dealTimeout1: ReturnType<typeof setTimeout> | null = null;
+    dealTimeout2: ReturnType<typeof setTimeout> | null = null;
 
     constructor() {
         makeAutoObservable(
@@ -33,6 +35,10 @@ export default class GameStore {
                 autoBind: true,
             },
         );
+    }
+
+    get dealerScore() {
+        return this.players['0'].score;
     }
 
     startGame() {
@@ -45,16 +51,16 @@ export default class GameStore {
         const players = Object.values(this.players).reverse();
 
         for (let i = 0; i < 2; i++) {
-            setTimeout(() => {
+            this.dealTimeout1 = setTimeout(() => {
                 for (let j = 0; j < players.length; j++) {
-                    setTimeout(() => {
+                    this.dealTimeout2 = setTimeout(() => {
                         runInAction(() => {
                             players[j].hand.push(this.getCardFromTop());
                             this.checkScore();
                         });
-                    }, j * 1000);
+                    }, j * 500);
                 }
-            }, i * 2000);
+            }, i * 1000);
         }
     }
 
@@ -76,7 +82,7 @@ export default class GameStore {
         let score = 0;
         let acesCounter = 0;
         const activePlayer = this.players[this.activePlayer];
-        activePlayer.hand.forEach(({ rank }, index, array) => {
+        activePlayer.hand.forEach(({ rank }) => {
             if (typeof rank === 'number') {
                 score += rank;
             }
@@ -96,21 +102,19 @@ export default class GameStore {
             }
             acesCounter--;
         }
-        runInAction(() => {
-            activePlayer.score = score;
-        });
+        activePlayer.score = score;
     }
 
     dealerPlay() {
         this.checkScore();
-        for (let i = 1; i < 10; i++) {
-            setTimeout(() => {
-                if (this.players['0'].score >= 17) {
-                    return;
-                }
-                this.hit();
-            }, i * 1000);
-        }
+
+        const dealerInterval = setInterval(() => {
+            if (this.dealerScore >= 17) {
+                clearInterval(dealerInterval);
+                return;
+            }
+            this.hit();
+        }, 500);
     }
 
     getCardFromTop(): Card {
@@ -119,8 +123,15 @@ export default class GameStore {
 
     resetGame() {
         runInAction(() => {
+            this.clearDealTimeouts();
             this.players = initialState;
             this.deck = shuffleArray(createDeck());
+            this.activePlayer = '1';
         });
+    }
+
+    clearDealTimeouts() {
+        this.dealTimeout1 && clearTimeout(this.dealTimeout1);
+        this.dealTimeout2 && clearTimeout(this.dealTimeout2);
     }
 }
