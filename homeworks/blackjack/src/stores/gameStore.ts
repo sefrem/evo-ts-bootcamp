@@ -10,12 +10,24 @@ const initialState = {
         name: 'Dealer',
         hand: [],
         score: 0,
+        chips: {
+            '10': 5,
+            '25': 4,
+            '50': 3,
+            '100': 2,
+        },
     },
     '1': {
         id: 1,
         name: 'SomeTestName',
         hand: [],
         score: 0,
+        chips: {
+            '10': 5,
+            '25': 4,
+            '50': 3,
+            '100': 2,
+        },
     },
 };
 
@@ -24,8 +36,6 @@ export default class GameStore {
     private deck: Card[] = [];
     activePlayer: Players = '1';
     players: Record<Players, Player> = initialState;
-    dealTimeout1: ReturnType<typeof setTimeout> | null = null;
-    dealTimeout2: ReturnType<typeof setTimeout> | null = null;
 
     constructor() {
         makeAutoObservable(
@@ -37,8 +47,8 @@ export default class GameStore {
         );
     }
 
-    get dealerScore() {
-        return this.players['0'].score;
+    get activePlayerScore() {
+        return this.players[this.activePlayer].score;
     }
 
     startGame() {
@@ -51,13 +61,13 @@ export default class GameStore {
         const players = Object.values(this.players).reverse();
 
         for (let i = 0; i < 2; i++) {
-            this.dealTimeout1 = setTimeout(() => {
+            setTimeout(() => {
                 for (let j = 0; j < players.length; j++) {
-                    this.dealTimeout2 = setTimeout(() => {
+                    setTimeout(() => {
                         runInAction(() => {
                             players[j].hand.push(this.getCardFromTop());
-                            this.checkScore();
                         });
+                        this.updateScore();
                     }, j * 500);
                 }
             }, i * 1000);
@@ -68,17 +78,36 @@ export default class GameStore {
         runInAction(() => {
             this.players[this.activePlayer].hand.push(this.getCardFromTop());
         });
-        this.checkScore();
+        this.updateScore();
+        if (this.activePlayer !== '0' && this.activePlayerScore > 21) {
+            setTimeout(() => {
+                this.setActivePlayer('0');
+                this.updateScore();
+            }, 500);
+            setTimeout(() => {
+                alert('Dealer has won');
+            }, 1000);
+        }
     }
 
     stand() {
-        runInAction(() => {
-            this.activePlayer = '0';
-        });
+        this.setActivePlayer('0');
         this.dealerPlay();
     }
 
-    checkScore() {
+    checkGameEnd() {
+        if (this.activePlayerScore > 21 || this.activePlayerScore < this.players['1'].score) {
+            alert(`${this.players['1'].name} has won`);
+        }
+        if (this.activePlayerScore <= 21 && this.activePlayerScore > this.players['1'].score) {
+            alert('Dealer has won');
+        }
+        if (this.activePlayerScore === this.players['1'].score) {
+            alert('Its a stand off');
+        }
+    }
+
+    updateScore() {
         let score = 0;
         let acesCounter = 0;
         const activePlayer = this.players[this.activePlayer];
@@ -106,11 +135,12 @@ export default class GameStore {
     }
 
     dealerPlay() {
-        this.checkScore();
+        this.updateScore();
 
         const dealerInterval = setInterval(() => {
-            if (this.dealerScore >= 17) {
+            if (this.activePlayerScore >= 17) {
                 clearInterval(dealerInterval);
+                this.checkGameEnd();
                 return;
             }
             this.hit();
@@ -123,15 +153,13 @@ export default class GameStore {
 
     resetGame() {
         runInAction(() => {
-            this.clearDealTimeouts();
             this.players = initialState;
             this.deck = shuffleArray(createDeck());
-            this.activePlayer = '1';
         });
+        this.setActivePlayer('1');
     }
 
-    clearDealTimeouts() {
-        this.dealTimeout1 && clearTimeout(this.dealTimeout1);
-        this.dealTimeout2 && clearTimeout(this.dealTimeout2);
+    setActivePlayer(playerId: Players) {
+        this.activePlayer = playerId;
     }
 }

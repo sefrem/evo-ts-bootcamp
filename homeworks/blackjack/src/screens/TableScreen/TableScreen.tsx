@@ -5,6 +5,7 @@ import { useStore } from '../../stores';
 import Hand from '../../components/UI/Hand/Hand';
 
 import styles from './TableScreen.module.css';
+import PlayerChips from '../../components/UI/PlayerChips/PlayerChips';
 
 const TableScreen: React.VFC = observer(() => {
     const gameStore = useStore('GameStore');
@@ -25,10 +26,12 @@ const TableScreen: React.VFC = observer(() => {
                 <span>{gameStore.players['0'].score}</span>
                 <Hand data={gameStore.players['0'].hand} hideLast={gameStore.activePlayer !== '0'} />
             </div>
+
             <div className={styles.player}>
                 <span>{gameStore.players['1'].name}: </span>
                 <span>{gameStore.players['1'].score}</span>
                 <Hand data={gameStore.players['1'].hand} />
+                <PlayerChips chips={gameStore.players['1'].chips} />
                 {gameStore.activePlayer === '1' && (
                     <div>
                         <button onClick={gameStore.hit}>Hit</button>
