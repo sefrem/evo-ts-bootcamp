@@ -3,9 +3,9 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '../../stores';
 import Hand from '../../components/UI/Hand/Hand';
+import Player from '../../components/Player/Player';
 
 import styles from './TableScreen.module.css';
-import PlayerChips from '../../components/UI/PlayerChips/PlayerChips';
 
 const TableScreen: React.VFC = observer(() => {
     const gameStore = useStore('GameStore');
@@ -16,10 +16,11 @@ const TableScreen: React.VFC = observer(() => {
 
     return (
         <div className={styles.field}>
-            <div>
-                <button onClick={gameStore.deal}>Deal</button>
-                <button onClick={gameStore.resetGame}>Reset</button>
-            </div>
+            <div>The winner of the game is: {gameStore.winner}</div>
+            {/*<div>*/}
+            {/*    <button onClick={gameStore.deal}>Deal</button>*/}
+            {/*    <button onClick={gameStore.resetGame}>Reset</button>*/}
+            {/*</div>*/}
 
             <div className={styles.dealer}>
                 <span>Dealer:</span>
@@ -27,17 +28,11 @@ const TableScreen: React.VFC = observer(() => {
                 <Hand data={gameStore.players['0'].hand} hideLast={gameStore.activePlayer !== '0'} />
             </div>
 
-            <div className={styles.player}>
-                <span>{gameStore.players['1'].name}: </span>
-                <span>{gameStore.players['1'].score}</span>
-                <Hand data={gameStore.players['1'].hand} />
-                <PlayerChips chips={gameStore.players['1'].chips} />
-                {gameStore.activePlayer === '1' && (
-                    <div>
-                        <button onClick={gameStore.hit}>Hit</button>
-                        <button onClick={gameStore.stand}>Stand</button>
-                    </div>
-                )}
+            <div className={styles.players}>
+                {gameStore.playersIds.map(playerId => {
+                    if (playerId === '0') return;
+                    return <Player key={playerId} playerId={playerId} />;
+                })}
             </div>
         </div>
     );

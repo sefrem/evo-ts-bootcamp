@@ -1,0 +1,13 @@
+
+.chips {
+    display: flex;
+}
+
+.chip {
+    padding: 0.5em;
+    text-align: center;
+}
+
+.chipIcon {
+    width: 4em;
+}

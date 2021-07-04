@@ -2,9 +2,9 @@ import { makeAutoObservable, runInAction } from 'mobx';
 
 import { createDeck } from '../utils/createDeck';
 import { shuffleArray } from '../utils/shuffleArray';
-import { Card, Player, Players } from '../types/types';
+import { Card, ChipsValues, GameStatus, Player, Players } from '../types/types';
 
-const initialState = {
+export const initialState = {
     '0': {
         id: 0,
         name: 'Dealer',
@@ -29,13 +29,28 @@ const initialState = {
             '100': 2,
         },
     },
+    '2': {
+        id: 2,
+        name: 'NewPlayer',
+        hand: [],
+        score: 0,
+        chips: {
+            '10': 5,
+            '25': 4,
+            '50': 3,
+            '100': 2,
+        },
+    },
 };
 
 export default class GameStore {
-    private playersCount = 1;
     private deck: Card[] = [];
+    playersIds: Players[] = ['0', '1', '2'];
+    status: GameStatus = GameStatus.idle;
     activePlayer: Players = '1';
     players: Record<Players, Player> = initialState;
+    bets: Record<Players, ChipsValues[]> | null = null;
+    winner = '';
 
     constructor() {
         makeAutoObservable(
@@ -47,8 +62,34 @@ export default class GameStore {
         );
     }
 
-    get activePlayerScore() {
+    getActivePlayerScore() {
         return this.players[this.activePlayer].score;
+    }
+
+    getPlayerBet(playerId: Players) {
+        if (this.bets) {
+            return this.bets[playerId];
+        }
+    }
+
+    setBet(chipValue: ChipsValues) {
+        if (this.status !== GameStatus.idle) return;
+        if (this.players[this.activePlayer].chips[chipValue] === 0) return;
+        if (!this.bets || !this.bets[this.activePlayer]) {
+            //@ts-ignore
+            this.bets = {
+                ...this.bets,
+                [this.activePlayer]: Array(chipValue),
+            };
+            this.removePlayerChip(chipValue);
+        } else {
+            this.bets[this.activePlayer].push(chipValue);
+            this.removePlayerChip(chipValue);
+        }
+    }
+
+    removePlayerChip(chipValue: ChipsValues) {
+        this.players[this.activePlayer].chips[chipValue]--;
     }
 
     startGame() {
@@ -70,8 +111,9 @@ export default class GameStore {
                         this.updateScore();
                     }, j * 500);
                 }
-            }, i * 1000);
+            }, i * 500 * this.playersIds.length);
         }
+        this.setActivePlayer('1');
     }
 
     hit() {
@@ -79,32 +121,93 @@ export default class GameStore {
             this.players[this.activePlayer].hand.push(this.getCardFromTop());
         });
         this.updateScore();
-        if (this.activePlayer !== '0' && this.activePlayerScore > 21) {
+        if (this.activePlayer !== '0' && this.getActivePlayerScore() > 21) {
             setTimeout(() => {
-                this.setActivePlayer('0');
+                this.setNextPlayer();
                 this.updateScore();
             }, 500);
             setTimeout(() => {
-                alert('Dealer has won');
+                this.checkGameEnd();
             }, 1000);
         }
     }
 
-    stand() {
-        this.setActivePlayer('0');
-        this.dealerPlay();
+    // set next player and return false if it was the last one
+    setNextPlayer(): boolean {
+        const activePlayerIndex = this.playersIds.indexOf(this.activePlayer);
+        if (activePlayerIndex === this.playersIds.length - 1) {
+            return false;
+        } else {
+            this.activePlayer = this.playersIds[activePlayerIndex + 1];
+            return true;
+        }
     }
 
+    stand() {
+        if (!this.setNextPlayer()) {
+            this.setActivePlayer('0');
+            this.dealerPlay();
+        }
+        this.updateScore();
+    }
+
+    endBetting() {
+        if (!this.setNextPlayer()) {
+            this.status = GameStatus.playing;
+            this.deal();
+        }
+    }
+
+    //TODO checkNaturals
+
     checkGameEnd() {
-        if (this.activePlayerScore > 21 || this.activePlayerScore < this.players['1'].score) {
-            alert(`${this.players['1'].name} has won`);
-        }
-        if (this.activePlayerScore <= 21 && this.activePlayerScore > this.players['1'].score) {
+        const score = this.getActivePlayerScore();
+        if (this.players['1'].score > 21) {
             alert('Dealer has won');
+            this.resetGame();
+            return;
         }
-        if (this.activePlayerScore === this.players['1'].score) {
+        if (score <= 21 && score > this.players['1'].score && this.players['1'].score < 21) {
+            alert('Dealer has won');
+            this.resetGame();
+            return;
+        }
+        if (score > 21 || score < this.players['1'].score) {
+            alert(`${this.players['1'].name} has won`);
+            this.updateChipsPlayerWon('1');
+            this.resetGame();
+            return;
+        }
+        if (score === this.players['1'].score) {
             alert('Its a stand off');
+            this.updateChipsStandoff('1');
+            this.resetGame();
+            return;
         }
+    }
+
+    updateChipsPlayerWon(playerId: Players) {
+        if (this.bets) {
+            this.bets[playerId].forEach(value => {
+                this.players[playerId].chips[value] += 2;
+            });
+        }
+    }
+
+    updateChipsStandoff(playerId: Players) {
+        if (this.bets) {
+            this.bets[playerId].forEach(value => {
+                this.players[playerId].chips[value] += 1;
+            });
+        }
+    }
+
+    emptyHands() {
+        this.playersIds.forEach(playerId => {
+            const player = this.players[playerId];
+            player.hand = [];
+            player.score = 0;
+        });
     }
 
     updateScore() {
@@ -138,7 +241,7 @@ export default class GameStore {
         this.updateScore();
 
         const dealerInterval = setInterval(() => {
-            if (this.activePlayerScore >= 17) {
+            if (this.getActivePlayerScore() >= 17) {
                 clearInterval(dealerInterval);
                 this.checkGameEnd();
                 return;
@@ -152,11 +255,11 @@ export default class GameStore {
     }
 
     resetGame() {
-        runInAction(() => {
-            this.players = initialState;
-            this.deck = shuffleArray(createDeck());
-        });
+        this.emptyHands();
+        this.deck = shuffleArray(createDeck());
         this.setActivePlayer('1');
+        this.status = GameStatus.idle;
+        this.bets = null;
     }
 
     setActivePlayer(playerId: Players) {

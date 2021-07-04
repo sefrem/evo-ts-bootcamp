@@ -1,0 +1,14 @@
+
+.chips {
+    position: relative;
+    width: 4em;
+    height: 4em;
+}
+
+.chip {
+    position: absolute;
+}
+
+.chipIcon {
+    width: 4em;
+}

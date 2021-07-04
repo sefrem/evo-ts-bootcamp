@@ -1,3 +1,5 @@
+import { initialState } from '../stores/gameStore';
+
 export interface Card {
     rank: number | string;
     suit: Suits;
@@ -5,9 +7,11 @@ export interface Card {
 
 export type Suits = 'hearts' | 'spades' | 'diamonds' | 'clubs';
 
-export type Players = '0' | '1';
+export type Players = keyof typeof initialState;
 
-type ChipsValues = '10' | '25' | '50' | '100';
+// export type Players = '0' | '1' | '2';
+
+export type ChipsValues = '10' | '25' | '50' | '100';
 
 export type Chips = Record<ChipsValues, number>;
 
@@ -17,4 +21,10 @@ export interface Player {
     hand: Card[];
     score: number;
     chips: Chips;
+}
+
+export enum GameStatus {
+    idle = 'idle',
+    playing = 'playing',
+    over = 'over',
 }

@@ -8,10 +8,14 @@
     align-items: center;
 }
 
+.handAndBet {
+    display: flex;
+}
+
 .dealer {
-
 }
 
-.player {
-    /*margin-top: 50%;*/
+.players {
+    display: flex;
 }
+
