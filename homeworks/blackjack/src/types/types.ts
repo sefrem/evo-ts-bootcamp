@@ -21,6 +21,7 @@ export interface Player {
     hand: Card[];
     score: number;
     chips: Chips;
+    isBusted: boolean;
 }
 
 export enum GameStatus {

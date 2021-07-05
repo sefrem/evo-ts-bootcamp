@@ -30,7 +30,7 @@ const TableScreen: React.VFC = observer(() => {
 
             <div className={styles.players}>
                 {gameStore.playersIds.map(playerId => {
-                    if (playerId === '0') return;
+                    if (playerId === '0') return null;
                     return <Player key={playerId} playerId={playerId} />;
                 })}
             </div>

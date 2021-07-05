@@ -16,6 +16,7 @@ export const initialState = {
             '50': 3,
             '100': 2,
         },
+        isBusted: false,
     },
     '1': {
         id: 1,
@@ -28,6 +29,7 @@ export const initialState = {
             '50': 3,
             '100': 2,
         },
+        isBusted: false,
     },
     '2': {
         id: 2,
@@ -40,6 +42,7 @@ export const initialState = {
             '50': 3,
             '100': 2,
         },
+        isBusted: false,
     },
 };
 
@@ -123,13 +126,21 @@ export default class GameStore {
         this.updateScore();
         if (this.activePlayer !== '0' && this.getActivePlayerScore() > 21) {
             setTimeout(() => {
-                this.setNextPlayer();
-                this.updateScore();
+                this.setBusted(this.activePlayer);
+                this.removePlayerBet(this.activePlayer);
             }, 500);
             setTimeout(() => {
-                this.checkGameEnd();
+                if (!this.setNextPlayer()) {
+                    this.setActivePlayer('0');
+                    this.checkGameEnd();
+                }
+                this.updateScore();
             }, 1000);
         }
+    }
+
+    setBusted(playerId: Players) {
+        this.players[playerId].isBusted = true;
     }
 
     // set next player and return false if it was the last one
@@ -161,32 +172,44 @@ export default class GameStore {
     //TODO checkNaturals
 
     checkGameEnd() {
-        const score = this.getActivePlayerScore();
-        if (this.players['1'].score > 21) {
-            alert('Dealer has won');
-            this.resetGame();
-            return;
-        }
-        if (score <= 21 && score > this.players['1'].score && this.players['1'].score < 21) {
-            alert('Dealer has won');
-            this.resetGame();
-            return;
-        }
-        if (score > 21 || score < this.players['1'].score) {
-            alert(`${this.players['1'].name} has won`);
-            this.updateChipsPlayerWon('1');
-            this.resetGame();
-            return;
-        }
-        if (score === this.players['1'].score) {
-            alert('Its a stand off');
-            this.updateChipsStandoff('1');
-            this.resetGame();
-            return;
-        }
+        const dealerScore = this.getActivePlayerScore();
+
+        Object.entries(this.players).forEach(([id, player]) => {
+            if (id === '0') {
+                return;
+            }
+            console.log('dealerScore', dealerScore, id);
+
+            if (dealerScore <= 21 && player.score <= 21) {
+                if (dealerScore > player.score) {
+                    console.log(id, 'here in second if removePlayerBet');
+                    this.removePlayerBet(id as Players);
+                    return;
+                }
+                if (player.score > dealerScore) {
+                    console.log(id, 'here in second if updateChipsPlayerWon');
+                    this.setBusted('0');
+                    this.updateChipsPlayerWon(id as Players);
+                    return;
+                }
+            }
+
+            if (dealerScore > 21) {
+                console.log(id, 'here in updateChipsPlayerWon');
+                this.setBusted('0');
+                this.updateChipsPlayerWon(id as Players);
+                return;
+            }
+            if (dealerScore === player.score) {
+                console.log(id, 'here in updateChipsStandoff');
+                this.updateChipsStandoff(id as Players);
+                return;
+            }
+        });
     }
 
     updateChipsPlayerWon(playerId: Players) {
+        console.log(playerId);
         if (this.bets) {
             this.bets[playerId].forEach(value => {
                 this.players[playerId].chips[value] += 2;
@@ -195,10 +218,17 @@ export default class GameStore {
     }
 
     updateChipsStandoff(playerId: Players) {
+        console.log(playerId);
         if (this.bets) {
             this.bets[playerId].forEach(value => {
                 this.players[playerId].chips[value] += 1;
             });
+        }
+    }
+
+    removePlayerBet(playerId: Players) {
+        if (this.bets) {
+            this.bets[playerId] = [];
         }
     }
 
@@ -255,11 +285,16 @@ export default class GameStore {
     }
 
     resetGame() {
-        this.emptyHands();
-        this.deck = shuffleArray(createDeck());
-        this.setActivePlayer('1');
-        this.status = GameStatus.idle;
-        this.bets = null;
+        setTimeout(() => {
+            this.emptyHands();
+            this.deck = shuffleArray(createDeck());
+            this.setActivePlayer('1');
+            this.status = GameStatus.idle;
+            this.bets = null;
+            this.playersIds.forEach(playerId => {
+                this.players[playerId].isBusted = false;
+            });
+        }, 5000);
     }
 
     setActivePlayer(playerId: Players) {
