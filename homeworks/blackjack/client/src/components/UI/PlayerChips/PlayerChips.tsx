@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { Chips, ChipsValues, Players } from '../../../types/types';
+import { Chips, ChipsValues } from '../../../types/types';
 import { useStore } from '../../../stores';
 import { getChipIconPath } from '../../../utils/getChipIconPath';
 
@@ -26,7 +26,7 @@ const PlayerChips: React.VFC<Props> = observer(({ chips, isActivePlayer }) => {
                 {chips &&
                     (Object.entries(chips) as Array<[ChipsValues, number]>).map(([value, quantity]) => {
                         total += Number(value) * quantity;
-                        if (quantity === 0) return;
+                        if (quantity === 0) return null;
                         return (
                             <li className={styles.chip} key={value} onClick={() => setBet(value)}>
                                 <img className={styles.chipIcon} src={getChipIconPath(value)} alt="" />

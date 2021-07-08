@@ -1,4 +1,4 @@
-import { initialState } from '../stores/gameStore';
+// import { initialState } from '../stores/gameStore';
 
 export interface Card {
     rank: number | string;
@@ -7,7 +7,7 @@ export interface Card {
 
 export type Suits = 'hearts' | 'spades' | 'diamonds' | 'clubs';
 
-export type Players = keyof typeof initialState;
+// export type Players = keyof typeof initialState;
 
 // export type Players = '0' | '1' | '2';
 
@@ -23,6 +23,8 @@ export interface Player {
     chips: Chips;
     isBusted: boolean;
 }
+
+export type Dealer = Omit<Player, 'chips'>;
 
 export enum GameStatus {
     idle = 'idle',

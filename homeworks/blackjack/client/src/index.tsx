@@ -8,10 +8,10 @@ import { StoreProvider } from './stores';
 
 configure({
     enforceActions: 'always',
-    computedRequiresReaction: true,
-    reactionRequiresObservable: true,
-    observableRequiresReaction: true,
-    disableErrorBoundaries: true,
+    // computedRequiresReaction: true,
+    // reactionRequiresObservable: true,
+    // observableRequiresReaction: true,
+    // disableErrorBoundaries: true,
 });
 
 ReactDOM.render(

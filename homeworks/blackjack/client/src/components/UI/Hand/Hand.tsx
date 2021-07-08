@@ -4,21 +4,31 @@ import clsx from 'clsx';
 
 import { Card } from '../../../types/types';
 import GameCard from '../GameCard/GameCard';
+import { useStore } from '../../../stores';
 
 import styles from './Hand.module.css';
 
 interface Props {
-    data: Card[];
+    data: Card[] | undefined;
     hideLast?: boolean;
 }
 
 const Hand: React.VFC<Props> = observer(({ data, hideLast = false }) => {
+    const gameStore = useStore('GameStore');
+    const cardOut = gameStore.nextGameTimer && gameStore.nextGameTimer <= 1;
     return (
         <div className={styles.hand}>
-            {data.map(({ rank, suit }, index) => {
+            {data?.map(({ rank, suit }, index) => {
                 const faceDown = hideLast && index !== 0 && index === data.length - 1;
                 return (
-                    <div className={clsx(styles.cardInHand, styles[`cardInHand-${index + 1}`])} key={rank + suit}>
+                    <div
+                        className={clsx(
+                            styles.cardInHand,
+                            styles[`cardInHand-${index + 1}`],
+                            cardOut && styles.cardOut,
+                        )}
+                        key={rank + suit}
+                    >
                         <GameCard rank={rank} suit={suit} faceDown={faceDown} />
                     </div>
                 );
