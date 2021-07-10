@@ -7,16 +7,6 @@ import Player from '../../components/Player/Player';
 
 import styles from './TableScreen.module.css';
 
-const callBackend = async () => {
-    const response = await fetch('/test');
-    const body = await response.json();
-
-    if (response.status !== 200) {
-        throw Error(body.message);
-    }
-    return body;
-};
-
 const TableScreen: React.VFC = observer(() => {
     const gameStore = useStore('GameStore');
 
@@ -24,20 +14,14 @@ const TableScreen: React.VFC = observer(() => {
         gameStore.startGame();
     }, [gameStore]);
 
-    React.useEffect(() => {
-        callBackend().then(data => {
-            console.log('data', data);
-        });
-    });
-
     return (
         <div className={styles.field}>
             {!!gameStore.nextGameTimer && <div>Next game in {gameStore.nextGameTimer}</div>}
 
             <div className={styles.dealer}>
                 <span>Dealer:</span>
-                <span>{gameStore.dealer.score}</span>
-                <Hand data={gameStore.dealer.hand} hideLast={!!gameStore.activePlayer} />
+                <span>{gameStore.dealer?.score}</span>
+                <Hand data={gameStore.dealer?.hand} hideLast={!!gameStore.activePlayer} />
             </div>
 
             <div className={styles.players}>

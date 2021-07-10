@@ -9,7 +9,7 @@
   --card-position: 0;
 }
 
-.App {
+.app {
   display: flex;
   justify-content: center;
   align-items: center;

@@ -7,6 +7,17 @@ export interface Card {
 
 export type Suits = 'hearts' | 'spades' | 'diamonds' | 'clubs';
 
+export interface InitialState {
+    dealer: Dealer;
+    players: Player[];
+    playerId: number;
+}
+
+export interface GameState {
+    dealer: Dealer;
+    players: Player[];
+}
+
 // export type Players = keyof typeof initialState;
 
 // export type Players = '0' | '1' | '2';

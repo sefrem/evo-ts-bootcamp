@@ -2,57 +2,85 @@ import { makeAutoObservable, runInAction } from 'mobx';
 
 import { createDeck } from '../utils/createDeck';
 import { shuffleArray } from '../utils/shuffleArray';
-import { Card, ChipsValues, Dealer, GameStatus, Player } from '../types/types';
+import { Card, ChipsValues, Dealer, GameStatus, InitialState, Player } from '../types/types';
 import { countScoreInHand } from '../utils/countScoreInHand';
+import socketIOClient, { Socket } from 'socket.io-client';
 
-const initialDealerState = {
-    id: 0,
-    name: 'Dealer',
-    hand: [],
-    score: 0,
-    isBusted: false,
-};
+// const initialDealerState = {
+//     id: 0,
+//     name: 'Dealer',
+//     hand: [],
+//     score: 0,
+//     isBusted: false,
+// };
+//
+// const initialState = [
+//     {
+//         id: 1,
+//         name: 'SomeTestName',
+//         hand: [],
+//         score: 0,
+//         chips: {
+//             '10': 5,
+//             '25': 4,
+//             '50': 3,
+//             '100': 2,
+//         },
+//         isBusted: false,
+//     },
+//     {
+//         id: 2,
+//         name: 'NewPlayer',
+//         hand: [],
+//         score: 0,
+//         chips: {
+//             '10': 5,
+//             '25': 4,
+//             '50': 3,
+//             '100': 2,
+//         },
+//         isBusted: false,
+//     },
+// ];
 
-const initialState = [
-    {
-        id: 1,
-        name: 'SomeTestName',
-        hand: [],
-        score: 0,
-        chips: {
-            '10': 5,
-            '25': 4,
-            '50': 3,
-            '100': 2,
-        },
-        isBusted: false,
-    },
-    {
-        id: 2,
-        name: 'NewPlayer',
-        hand: [],
-        score: 0,
-        chips: {
-            '10': 5,
-            '25': 4,
-            '50': 3,
-            '100': 2,
-        },
-        isBusted: false,
-    },
-];
+const ENDPOINT = 'http://127.0.0.1:4001';
 
 export default class GameStore {
     private deck: Card[] = [];
     playersIds: number[] = [1, 2];
     status: GameStatus = GameStatus.idle;
     activePlayer: number | null = 1;
-    dealer: Dealer = initialDealerState;
-    players: Player[] = initialState;
+    dealer: Dealer | null = null;
+    playerId: number | null = null;
+    players: Player[] = [];
     bets: Record<number, ChipsValues[]> | null = null;
     nextGameTimer: number | null = null;
+    gameCode: string = '';
+    private socket: Socket;
 
     constructor() {
+        this.socket = socketIOClient(ENDPOINT);
+        this.socket.on('gameCode', (gameCode: string) => {
+            window.history.pushState({}, '', gameCode);
+        });
+        this.socket.on('initState', ({ dealer, players, playerId }: InitialState) => {
+            runInAction(() => {
+                this.dealer = dealer;
+                this.players = players;
+                this.playerId = playerId;
+            });
+        });
+        this.socket.on('addPlayer', playerId => {
+            runInAction(() => {
+                this.playerId = playerId;
+            });
+        });
+        this.socket.on('gameState', ({ dealer, players }: InitialState) => {
+            runInAction(() => {
+                this.dealer = dealer;
+                this.players = players;
+            });
+        });
         makeAutoObservable(
             this,
             {},
@@ -62,8 +90,16 @@ export default class GameStore {
         );
     }
 
+    startNewGame() {
+        this.socket.emit('newGame');
+    }
+
+    joinGame(gameCode: string) {
+        this.socket.emit('joinGame', gameCode);
+    }
+
     getDealerScore() {
-        return this.dealer.score;
+        return this.dealer?.score;
     }
 
     getPlayerBet(playerId: number) {
@@ -120,7 +156,7 @@ export default class GameStore {
                     setTimeout(() => {
                         runInAction(() => {
                             if (j === players.length) {
-                                this.dealer.hand.push(this.getCardFromTop());
+                                this.dealer?.hand.push(this.getCardFromTop());
                             } else {
                                 players[j].hand.push(this.getCardFromTop());
                                 players[j].score = countScoreInHand(players[j].hand);
@@ -135,7 +171,7 @@ export default class GameStore {
 
     dealerHit() {
         runInAction(() => {
-            this.dealer.hand.push(this.getCardFromTop());
+            this.dealer?.hand.push(this.getCardFromTop());
         });
         this.updateDealerScore();
     }
@@ -194,6 +230,8 @@ export default class GameStore {
     checkGameEnd() {
         const dealerScore = this.getDealerScore();
 
+        if (!dealerScore) return;
+
         this.players.forEach(({ id, score, isBusted }) => {
             if (isBusted) {
                 return;
@@ -214,7 +252,9 @@ export default class GameStore {
 
             if (dealerScore > 21) {
                 console.log(id, 'here in updateChipsPlayerWon');
-                this.dealer.isBusted = true;
+                if (this.dealer) {
+                    this.dealer.isBusted = true;
+                }
                 this.updateChipsPlayerWon(id);
                 return;
             }
@@ -259,9 +299,11 @@ export default class GameStore {
     }
 
     resetDealer() {
-        this.dealer.hand = [];
-        this.dealer.score = 0;
-        this.dealer.isBusted = false;
+        if (this.dealer) {
+            this.dealer.hand = [];
+            this.dealer.score = 0;
+            this.dealer.isBusted = false;
+        }
     }
 
     checkIfAllBusted(): boolean {
@@ -269,7 +311,9 @@ export default class GameStore {
     }
 
     updateDealerScore() {
-        this.dealer.score = countScoreInHand(this.dealer.hand);
+        if (this.dealer) {
+            this.dealer.score = countScoreInHand(this.dealer.hand);
+        }
     }
 
     updateScore() {
@@ -298,7 +342,7 @@ export default class GameStore {
         }
 
         const dealerInterval = setInterval(() => {
-            if (this.dealer.score >= 17) {
+            if (this.dealer && this.dealer.score >= 17) {
                 clearInterval(dealerInterval);
                 this.checkGameEnd();
                 return;
