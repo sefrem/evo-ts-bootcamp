@@ -15,7 +15,7 @@ const App: React.VFC = observer(() => {
         if (gameCode) {
             gameStore.joinGame(gameCode);
         }
-    }, []);
+    }, [gameStore]);
 
     return <div className={styles.app}>{gameStore.players.length > 0 ? <TableScreen /> : <MenuScreen />}</div>;
 });

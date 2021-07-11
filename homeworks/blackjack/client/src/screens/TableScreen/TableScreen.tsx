@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '../../stores';
 import Hand from '../../components/UI/Hand/Hand';
-import Player from '../../components/Player/Player';
+import GamePlayer from '../../components/Player/Player';
 
 import styles from './TableScreen.module.css';
 
@@ -25,8 +25,8 @@ const TableScreen: React.VFC = observer(() => {
             </div>
 
             <div className={styles.players}>
-                {gameStore.playersIds.map(playerId => (
-                    <Player key={playerId} playerId={playerId} />
+                {gameStore.players.map(player => (
+                    <GamePlayer key={player.id} player={player} />
                 ))}
             </div>
         </div>

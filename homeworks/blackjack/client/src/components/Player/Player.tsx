@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { GameStatus } from '../../types/types';
+import { GameStatus, Player } from '../../types/types';
 import PlayerBet from '../UI/PlayerBet/PlayerBet';
 import Hand from '../UI/Hand/Hand';
 import PlayerChips from '../UI/PlayerChips/PlayerChips';
@@ -10,20 +10,19 @@ import { useStore } from '../../stores';
 import styles from './Player.module.css';
 
 type Props = {
-    playerId: number;
+    player: Player;
 };
 
-const Player: React.VFC<Props> = observer(({ playerId }) => {
+const GamePlayer: React.VFC<Props> = observer(({ player }) => {
     const gameStore = useStore('GameStore');
-    const isActivePlayer = gameStore.activePlayer === playerId;
-    const player = gameStore.getPlayerById(playerId);
+    const isActivePlayer = gameStore.activePlayer === player.id;
 
     return (
         <div className={styles.player}>
             {player?.isBusted ? (
                 <div style={{ height: 138 }}>BUSTED</div>
             ) : (
-                <PlayerBet chips={gameStore.getPlayerBet(playerId)} />
+                <PlayerBet chips={gameStore.getPlayerBet(player.id)} />
             )}
 
             <span>{player?.name}: </span>
@@ -45,4 +44,4 @@ const Player: React.VFC<Props> = observer(({ playerId }) => {
     );
 });
 
-export default Player;
+export default GamePlayer;

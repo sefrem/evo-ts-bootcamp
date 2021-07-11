@@ -8,9 +8,9 @@ export interface Card {
 export type Suits = 'hearts' | 'spades' | 'diamonds' | 'clubs';
 
 export interface InitialState {
-    dealer: Dealer;
-    players: Player[];
-    playerId: number;
+    state: GameState;
+    activePlayerId: string;
+    status: GameStatus;
 }
 
 export interface GameState {
@@ -27,7 +27,7 @@ export type ChipsValues = '10' | '25' | '50' | '100';
 export type Chips = Record<ChipsValues, number>;
 
 export interface Player {
-    id: number;
+    id: string;
     name: string;
     hand: Card[];
     score: number;
