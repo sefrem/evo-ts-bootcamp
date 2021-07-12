@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import socketIOClient, { Socket } from 'socket.io-client';
 
-import { createDeck, shuffleArray, countScoreInHand, manageClientId } from '../utils';
+import { createDeck, shuffleArray, manageClientId } from '../utils';
 import { Card, ChipsValues, Dealer, GameStatus, InitialState, Player } from '../types/types';
 
 const ENDPOINT = 'http://127.0.0.1:4001';
@@ -9,14 +9,12 @@ const ENDPOINT = 'http://127.0.0.1:4001';
 export default class GameStore {
     private deck: Card[] = [];
     private socket: Socket;
-    private playerId: string = '';
+    playerId: string = '';
     playersIds: string[] = ['1', '2'];
     status: GameStatus = GameStatus.idle;
-    activePlayer: string = '';
+    activePlayerId: string = '';
     dealer: Dealer | null = null;
-    // playerId: number | null = null;
     players: Player[] = [];
-    bets: Record<string, ChipsValues[]> | null = null;
     nextGameTimer: number | null = null;
     gameCode: string = '';
 
@@ -28,24 +26,41 @@ export default class GameStore {
             window.history.pushState({}, '', gameCode);
         });
 
-        // this.socket.on('initState', ({ dealer, players }: InitialState) => {
-        //     runInAction(() => {
-        //         this.dealer = dealer;
-        //         this.players = players;
-        //     });
-        // });
-
         this.socket.on('addPlayer', playerId => {
             runInAction(() => {
                 this.playerId = playerId;
             });
         });
 
-        this.socket.on('gameState', ({ state, activePlayerId, status }: InitialState) => {
+        this.socket.on('gameStateInitial', ({ dealer, players, activePlayerId, status }: InitialState) => {
             runInAction(() => {
-                this.dealer = state.dealer;
-                this.players = state.players;
-                this.activePlayer = activePlayerId;
+                this.dealer = dealer;
+                this.players = players;
+                this.activePlayerId = activePlayerId;
+                this.status = status;
+            });
+        });
+
+        this.socket.on('gameStatePlayers', (players: Player[]) => {
+            runInAction(() => {
+                this.players = players;
+            });
+        });
+
+        this.socket.on('gameStateDealer', (dealer: Dealer) => {
+            runInAction(() => {
+                this.dealer = dealer;
+            });
+        });
+
+        this.socket.on('gameStateActivePlayerId', (activePlayerId: string) => {
+            runInAction(() => {
+                this.activePlayerId = activePlayerId;
+            });
+        });
+
+        this.socket.on('gameStateStatus', (status: GameStatus) => {
+            runInAction(() => {
                 this.status = status;
             });
         });
@@ -72,17 +87,19 @@ export default class GameStore {
     }
 
     joinGame(gameCode: string) {
-        this.socket.emit('joinGame', { roomName: gameCode, clientId: this.playerId });
+        this.socket.emit('joinGame', { roomName: gameCode, playerId: this.playerId });
+    }
+
+    endBetting() {
+        this.socket.emit('endBetting', this.playerId);
     }
 
     getDealerScore() {
         return this.dealer?.score;
     }
 
-    getPlayerBet(playerId: string) {
-        if (this.bets) {
-            return this.bets[playerId];
-        }
+    getPlayerBet(playerId: string): ChipsValues[] | undefined {
+        return this.getPlayerById(playerId)?.bet;
     }
 
     getPlayerById(playerId: string) {
@@ -90,32 +107,14 @@ export default class GameStore {
     }
 
     getActivePlayer() {
-        if (this.activePlayer) {
-            return this.getPlayerById(this.activePlayer);
+        if (this.activePlayerId) {
+            return this.getPlayerById(this.activePlayerId);
         }
     }
 
     setBet(chipValue: ChipsValues) {
-        if (this.status !== GameStatus.idle) return;
-        if (this.getActivePlayer()?.chips[chipValue] === 0) return;
-        if (!this.activePlayer) return;
-        if (!this.bets || !this.bets[this.activePlayer]) {
-            //@ts-ignore
-            this.bets = {
-                ...this.bets,
-                [this.activePlayer]: new Array(chipValue),
-            };
-        } else {
-            this.bets[this.activePlayer].push(chipValue);
-        }
-        this.removePlayerChip(chipValue);
-    }
-
-    removePlayerChip(chipValue: ChipsValues) {
-        const player = this.getActivePlayer();
-        if (player) {
-            player.chips[chipValue]--;
-        }
+        if (this.playerId !== this.activePlayerId) return;
+        this.socket.emit('setBet', { playerId: this.playerId, chipValue });
     }
 
     startGame() {
@@ -124,27 +123,27 @@ export default class GameStore {
         });
     }
 
-    deal() {
-        const players = this.players.reverse();
-
-        for (let i = 0; i < 2; i++) {
-            setTimeout(() => {
-                for (let j = 0; j <= players.length; j++) {
-                    setTimeout(() => {
-                        runInAction(() => {
-                            if (j === players.length) {
-                                this.dealer?.hand.push(this.getCardFromTop());
-                            } else {
-                                players[j].hand.push(this.getCardFromTop());
-                                players[j].score = countScoreInHand(players[j].hand);
-                            }
-                        });
-                    }, j * 500);
-                }
-            }, i * 500 * (this.playersIds.length + 1));
-        }
-        this.setActivePlayer('1');
-    }
+    // deal() {
+    //     const players = this.players.reverse();
+    //
+    //     for (let i = 0; i < 2; i++) {
+    //         setTimeout(() => {
+    //             for (let j = 0; j <= players.length; j++) {
+    //                 setTimeout(() => {
+    //                     runInAction(() => {
+    //                         if (j === players.length) {
+    //                             this.dealer?.hand.push(this.getCardFromTop());
+    //                         } else {
+    //                             players[j].hand.push(this.getCardFromTop());
+    //                             players[j].score = countScoreInHand(players[j].hand);
+    //                         }
+    //                     });
+    //                 }, j * 500);
+    //             }
+    //         }, i * 500 * (this.playersIds.length + 1));
+    //     }
+    //     this.setActivePlayer('1');
+    // }
 
     dealerHit() {
         runInAction(() => {
@@ -155,18 +154,18 @@ export default class GameStore {
 
     hit() {
         runInAction(() => {
-            this.activePlayer && this.getActivePlayer()!.hand.push(this.getCardFromTop());
+            this.activePlayerId && this.getActivePlayer()!.hand.push(this.getCardFromTop());
         });
         this.updateActivePlayerScore();
-        if (this.activePlayer && this.getActivePlayer()!.score > 21) {
+        if (this.activePlayerId && this.getActivePlayer()!.score > 21) {
             this.handlePlayerBusted();
         }
     }
 
     handlePlayerBusted() {
-        this.activePlayer && this.setBusted(this.activePlayer);
+        this.activePlayerId && this.setBusted(this.activePlayerId);
         setTimeout(() => {
-            this.activePlayer && this.removePlayerBet(this.activePlayer);
+            this.activePlayerId && this.removePlayerBet(this.activePlayerId);
         }, 500);
         setTimeout(() => {
             if (!this.setNextPlayer()) {
@@ -178,12 +177,12 @@ export default class GameStore {
 
     // set next player and return false if it was the last one
     setNextPlayer(): boolean {
-        if (!this.activePlayer) return false;
-        const activePlayerIndex = this.playersIds.indexOf(this.activePlayer);
+        if (!this.activePlayerId) return false;
+        const activePlayerIndex = this.playersIds.indexOf(this.activePlayerId);
         if (activePlayerIndex === this.playersIds.length - 1) {
             return false;
         } else {
-            this.activePlayer = this.playersIds[activePlayerIndex + 1];
+            this.activePlayerId = this.playersIds[activePlayerIndex + 1];
             return true;
         }
     }
@@ -195,12 +194,12 @@ export default class GameStore {
         this.updateActivePlayerScore();
     }
 
-    endBetting() {
-        if (!this.setNextPlayer()) {
-            this.status = GameStatus.playing;
-            this.deal();
-        }
-    }
+    // endBetting() {
+    //     if (!this.setNextPlayer()) {
+    //         this.status = GameStatus.playing;
+    //         this.deal();
+    //     }
+    // }
 
     //TODO checkNaturals
 
@@ -245,24 +244,23 @@ export default class GameStore {
     }
 
     updateChipsPlayerWon(playerId: string) {
-        if (this.bets) {
-            this.bets[playerId].forEach(value => {
-                this.getPlayerById(playerId)!.chips[value] += 2;
-            });
-        }
+        const player = this.getPlayerById(playerId);
+        player?.bet.forEach(value => {
+            player.chips[value] += 2;
+        });
     }
 
     updateChipsStandoff(playerId: string) {
-        if (this.bets) {
-            this.bets[playerId].forEach(value => {
-                this.getPlayerById(playerId)!.chips[value] += 1;
-            });
-        }
+        const player = this.getPlayerById(playerId);
+        player?.bet.forEach(value => {
+            player.chips[value] += 1;
+        });
     }
 
     removePlayerBet(playerId: string) {
-        if (this.bets) {
-            this.bets[playerId] = [];
+        const player = this.getPlayerById(playerId);
+        if (player) {
+            player.bet = [];
         }
     }
 
@@ -270,6 +268,7 @@ export default class GameStore {
         this.players = this.players.map(player => ({
             ...player,
             hand: [],
+            bet: [],
             score: 0,
             isBusted: false,
         }));
@@ -289,7 +288,7 @@ export default class GameStore {
 
     updateDealerScore() {
         if (this.dealer) {
-            this.dealer.score = countScoreInHand(this.dealer.hand);
+            // this.dealer.score = countScoreInHand(this.dealer.hand);
         }
     }
 
@@ -297,7 +296,7 @@ export default class GameStore {
         this.playersIds.forEach(playerId => {
             const player = this.getPlayerById(playerId);
             if (player) {
-                player.score = countScoreInHand(player.hand);
+                // player.score = countScoreInHand(player.hand);
             }
         });
     }
@@ -305,7 +304,7 @@ export default class GameStore {
     updateActivePlayerScore() {
         const activePlayer = this.getActivePlayer();
         if (activePlayer) {
-            activePlayer.score = countScoreInHand(activePlayer.hand);
+            // activePlayer.score = countScoreInHand(activePlayer.hand);
         }
     }
 
@@ -346,14 +345,13 @@ export default class GameStore {
                 this.deck = shuffleArray(createDeck());
                 this.setActivePlayer('1');
                 this.status = GameStatus.idle;
-                this.bets = null;
                 clearInterval(countdownTimer);
             }
         }, 1000);
     }
 
     setActivePlayer(playerId: string) {
-        this.activePlayer = playerId;
+        this.activePlayerId = playerId;
     }
 
     setBusted(playerId: string) {

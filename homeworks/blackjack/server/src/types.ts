@@ -16,6 +16,14 @@ export interface Player {
   score: number;
   chips: Chips;
   isBusted: boolean;
+  bet: ChipsValues[];
+}
+
+export interface InitialState {
+  players: Player[];
+  activePlayerId: string;
+  status: GameStatus;
+  dealer: Dealer;
 }
 
 // export type Dealer = Omit<Player, "chips">;
@@ -38,3 +46,5 @@ export enum GameStatus {
   playing = "playing",
   over = "over",
 }
+
+export type Bets = Record<string, ChipsValues[]>;

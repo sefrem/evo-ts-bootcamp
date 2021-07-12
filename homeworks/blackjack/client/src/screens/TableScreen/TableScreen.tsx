@@ -21,7 +21,7 @@ const TableScreen: React.VFC = observer(() => {
             <div className={styles.dealer}>
                 <span>Dealer:</span>
                 <span>{gameStore.dealer?.score}</span>
-                <Hand data={gameStore.dealer?.hand} hideLast={!!gameStore.activePlayer} />
+                <Hand data={gameStore.dealer?.hand} hideLast={!!gameStore.activePlayerId} />
             </div>
 
             <div className={styles.players}>

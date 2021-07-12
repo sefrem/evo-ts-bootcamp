@@ -15,7 +15,9 @@ type Props = {
 
 const GamePlayer: React.VFC<Props> = observer(({ player }) => {
     const gameStore = useStore('GameStore');
-    const isActivePlayer = gameStore.activePlayer === player.id;
+    const isActivePlayer = gameStore.activePlayerId === gameStore.playerId && gameStore.activePlayerId === player.id;
+    const showEndBettingBtn = gameStore.status === GameStatus.idle && isActivePlayer;
+    const isActivePlayerAndGameGoing = isActivePlayer && gameStore.status === GameStatus.playing;
 
     return (
         <div className={styles.player}>
@@ -27,12 +29,14 @@ const GamePlayer: React.VFC<Props> = observer(({ player }) => {
 
             <span>{player?.name}: </span>
             <span>{player?.score}</span>
+
             <Hand data={player?.hand} />
+
             <PlayerChips chips={player?.chips} isActivePlayer={isActivePlayer} />
-            {gameStore.status === GameStatus.idle && isActivePlayer && (
-                <button onClick={gameStore.endBetting}>End Betting</button>
-            )}
-            {isActivePlayer && gameStore.status === GameStatus.playing && (
+
+            {showEndBettingBtn && <button onClick={gameStore.endBetting}>End Betting</button>}
+
+            {isActivePlayerAndGameGoing && (
                 <div>
                     <button disabled={player?.isBusted} onClick={gameStore.hit}>
                         Hit

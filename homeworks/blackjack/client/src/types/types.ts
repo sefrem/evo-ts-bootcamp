@@ -8,9 +8,10 @@ export interface Card {
 export type Suits = 'hearts' | 'spades' | 'diamonds' | 'clubs';
 
 export interface InitialState {
-    state: GameState;
+    players: Player[];
     activePlayerId: string;
     status: GameStatus;
+    dealer: Dealer;
 }
 
 export interface GameState {
@@ -33,6 +34,7 @@ export interface Player {
     score: number;
     chips: Chips;
     isBusted: boolean;
+    bet: ChipsValues[];
 }
 
 export type Dealer = Omit<Player, 'chips'>;

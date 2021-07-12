@@ -1,9 +1,10 @@
 import express from "express";
 import { createServer } from "http";
-import { Server } from "socket.io";
+import { BroadcastOperator, Server } from "socket.io";
 
 import { generateId } from "../utils/generateId";
-import { gameState } from "./state/game";
+import { gameService } from "./state/gameService";
+import { DefaultEventsMap } from "socket.io/dist/typed-events";
 
 const port = process.env.PORT || 4001;
 
@@ -22,17 +23,20 @@ const io = new Server(httpServer, {
 io.on("reconnect", () => {});
 
 io.on("connection", (client) => {
-  client.on("newGame", (clientId) => {
+  client.on("newGame", (playerId) => {
     const roomName = generateId(5);
-    gameState.clientRooms[clientId] = roomName;
+    const broadcastOperator: BroadcastOperator<DefaultEventsMap> = io.sockets.in(
+      roomName
+    );
+    gameService.clientRooms[playerId] = roomName;
     client.emit("gameCode", roomName);
 
-    gameState.initGame(roomName, clientId);
+    gameService.initGame(roomName, playerId, broadcastOperator);
     client.join(roomName);
-    gameState.setActivePlayer(clientId);
+    gameService.setActivePlayer(playerId);
   });
 
-  client.on("joinGame", ({ roomName, clientId }) => {
+  client.on("joinGame", ({ roomName, playerId }) => {
     const room = io.sockets.adapter.rooms.get(roomName);
 
     if (!room) {
@@ -40,16 +44,35 @@ io.on("connection", (client) => {
       return;
     }
 
-    if (gameState.clientRooms[clientId] !== roomName) {
-      gameState.addPlayer(roomName, clientId);
-      gameState.clientRooms[clientId] = roomName;
+    if (gameService.clientRooms[playerId] !== roomName) {
+      gameService.addPlayer(roomName, playerId);
+      gameService.clientRooms[playerId] = roomName;
     }
 
     client.join(roomName);
 
     io.sockets
       .in(roomName)
-      .emit("gameState", gameState.getInitialState(roomName));
+      .emit("gameStateInitial", gameService.getInitialState(roomName));
+  });
+
+  client.on("setBet", ({ playerId, chipValue }) => {
+    gameService.setBet(playerId, chipValue);
+
+    const roomName = gameService.getPlayerRoomName(playerId);
+
+    io.sockets
+      .in(roomName)
+      .emit("gameStatePlayers", gameService.getPlayersState(playerId));
+  });
+
+  client.on("endBetting", (playerId) => {
+    gameService.endBetting(playerId);
+
+    const roomName = gameService.getPlayerRoomName(playerId);
+    const activePlayerId = gameService.getActivePlayerId(playerId);
+    // console.log("activePlayerId", activePlayerId);
+    io.sockets.in(roomName).emit("gameStateActivePlayerId", activePlayerId);
   });
 
   // client.on("disconnecting", () => {
@@ -58,7 +81,7 @@ io.on("connection", (client) => {
   //     if (room.size === 1) {
   //       console.log("client room", room);
   //       room.delete(roomName);
-  //       gameState.removeRoom(roomName);
+  //       gameService.removeRoom(roomName);
   //     }
   //   });
   // });
