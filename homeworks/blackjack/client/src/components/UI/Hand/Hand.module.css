@@ -43,16 +43,7 @@
     left: 230px;
 }
 
-.cardOut {
-    animation: cartOut 0.2s
-}
-
 @keyframes dealCard {
     from {transform: translate(100px, -1000px)}
     to {transform: translate(0, 0)}
-}
-
-@keyframes cartOut {
-    from {transform: translate(0, 0)}
-    to {transform: translate(100px, -1000px) }
 }

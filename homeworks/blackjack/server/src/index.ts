@@ -1,10 +1,11 @@
 import express from "express";
 import { createServer } from "http";
 import { BroadcastOperator, Server } from "socket.io";
-
-import { generateId } from "../utils/generateId";
-import { gameService } from "./state/gameService";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+
+import { generateId } from "../utils";
+import { gameService } from "./state/gameService";
+import { ChipsValues } from "./types";
 
 const port = process.env.PORT || 4001;
 
@@ -17,18 +18,13 @@ const io = new Server(httpServer, {
   },
 });
 
-// const state: Record<string, State> = {};
-// const clientRooms: Record<string, string> = {};
-
-io.on("reconnect", () => {});
-
 io.on("connection", (client) => {
-  client.on("newGame", (playerId) => {
+  client.on("newGame", (playerId: string) => {
     const roomName = generateId(5);
     const broadcastOperator: BroadcastOperator<DefaultEventsMap> = io.sockets.in(
       roomName
     );
-    gameService.clientRooms[playerId] = roomName;
+    gameService.setPlayerRoom(playerId, roomName);
     client.emit("gameCode", roomName);
 
     gameService.initGame(roomName, playerId, broadcastOperator);
@@ -36,44 +32,43 @@ io.on("connection", (client) => {
     gameService.setActivePlayer(playerId);
   });
 
-  client.on("joinGame", ({ roomName, playerId }) => {
-    const room = io.sockets.adapter.rooms.get(roomName);
+  client.on(
+    "joinGame",
+    ({ playerId, roomName }: { playerId: string; roomName: string }) => {
+      const room = io.sockets.adapter.rooms.get(roomName);
 
-    if (!room) {
-      client.emit("unknownGame");
-      return;
+      if (!room) {
+        client.emit("unknownGame");
+        return;
+      }
+
+      if (gameService.getPlayerRoomName(playerId) !== roomName) {
+        gameService.addPlayer(roomName, playerId);
+        gameService.setPlayerRoom(playerId, roomName);
+      }
+
+      client.join(roomName);
+
+      io.sockets
+        .in(roomName)
+        .emit("gameStateInitial", gameService.getInitialState(roomName));
     }
+  );
 
-    if (gameService.clientRooms[playerId] !== roomName) {
-      gameService.addPlayer(roomName, playerId);
-      gameService.clientRooms[playerId] = roomName;
+  client.on(
+    "setBet",
+    ({ playerId, chipValue }: { playerId: string; chipValue: ChipsValues }) => {
+      gameService.setBet(playerId, chipValue);
     }
+  );
 
-    client.join(roomName);
-
-    io.sockets
-      .in(roomName)
-      .emit("gameStateInitial", gameService.getInitialState(roomName));
-  });
-
-  client.on("setBet", ({ playerId, chipValue }) => {
-    gameService.setBet(playerId, chipValue);
-
-    const roomName = gameService.getPlayerRoomName(playerId);
-
-    io.sockets
-      .in(roomName)
-      .emit("gameStatePlayers", gameService.getPlayersState(playerId));
-  });
-
-  client.on("endBetting", (playerId) => {
+  client.on("endBetting", (playerId: string) => {
     gameService.endBetting(playerId);
-
-    const roomName = gameService.getPlayerRoomName(playerId);
-    const activePlayerId = gameService.getActivePlayerId(playerId);
-    // console.log("activePlayerId", activePlayerId);
-    io.sockets.in(roomName).emit("gameStateActivePlayerId", activePlayerId);
   });
+
+  client.on("hit", (playerId: string) => gameService.hit(playerId));
+
+  client.on("stand", (playerId: string) => gameService.stand(playerId));
 
   // client.on("disconnecting", () => {
   //   client.rooms.forEach((roomName) => {

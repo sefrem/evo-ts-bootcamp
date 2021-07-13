@@ -21,11 +21,7 @@ const GamePlayer: React.VFC<Props> = observer(({ player }) => {
 
     return (
         <div className={styles.player}>
-            {player?.isBusted ? (
-                <div style={{ height: 138 }}>BUSTED</div>
-            ) : (
-                <PlayerBet chips={gameStore.getPlayerBet(player.id)} />
-            )}
+            {player?.isBusted ? <div style={{ height: 138 }}>BUSTED</div> : <PlayerBet chips={player.bet} />}
 
             <span>{player?.name}: </span>
             <span>{player?.score}</span>

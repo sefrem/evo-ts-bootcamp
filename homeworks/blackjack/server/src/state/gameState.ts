@@ -1,10 +1,16 @@
-import { Card, Dealer, GameStatus, InitialState, Player } from "../types";
-import { ChipsValues } from "../../../client/src/types/types";
-import { shuffleArray } from "../../utils/shuffleArray";
-import { createDeck } from "../../utils/createDeck";
-import { BroadcastOperator } from "socket.io";
-import { countScoreInHand } from "../../utils/countScoreInHand";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import { BroadcastOperator } from "socket.io";
+
+import {
+  Card,
+  Dealer,
+  GameStatus,
+  InitialState,
+  Player,
+  ChipsValues,
+} from "../types";
+import { shuffleArray, createDeck, countScoreInHand } from "../../utils";
+import { BroadcastService } from "./broadcastService";
 
 const initialDealerState: Dealer = {
   id: 0,
@@ -21,7 +27,11 @@ export class GameState {
   public activePlayerId: string = "";
   public status: GameStatus = GameStatus.idle;
   public players: Player[] = [];
-  private broadcastOperator: BroadcastOperator<DefaultEventsMap>;
+  private broadcastService: BroadcastService;
+
+  constructor(broadcastOperator: BroadcastOperator<DefaultEventsMap>) {
+    this.broadcastService = new BroadcastService(broadcastOperator);
+  }
 
   public getInitialState(): InitialState {
     return {
@@ -32,13 +42,9 @@ export class GameState {
     };
   }
 
-  public initGame(
-    playerId: string,
-    broadcastOperator: BroadcastOperator<DefaultEventsMap>
-  ): void {
+  public initGame(playerId: string): void {
     this.addPlayer(playerId);
     this.deck = shuffleArray(createDeck());
-    this.broadcastOperator = broadcastOperator;
   }
 
   public addPlayer(playerId: string): void {
@@ -59,7 +65,7 @@ export class GameState {
     this.playersIds.push(playerId);
   }
 
-  public setActivePlayer(playerId: string) {
+  public setActivePlayer(playerId: string): void {
     this.activePlayerId = playerId;
   }
 
@@ -73,17 +79,200 @@ export class GameState {
     player.bet.push(chipValue);
 
     this.removePlayerChip(chipValue);
+
+    this.broadcastService.emitPlayers(this.players);
   }
 
   public endBetting(): void {
     if (!this.setNextPlayer()) {
       this.status = GameStatus.playing;
-      this.broadcastOperator.emit("gameStateStatus", this.status);
+      this.broadcastService.emitStatus(this.status);
       this.deal();
+    }
+    this.broadcastService.emitActivePlayerId(this.activePlayerId);
+  }
+
+  public hit(): void {
+    const activePlayer = this.getActivePlayer();
+    activePlayer.hand.push(this.getCardFromTop());
+    this.updateActivePlayerScore();
+
+    this.broadcastService.emitPlayers(this.players);
+
+    if (activePlayer.score > 21) {
+      this.handlePlayerBusted();
     }
   }
 
-  private deal() {
+  public stand() {
+    if (!this.setNextPlayer()) {
+      this.dealerPlay();
+      return;
+    }
+    this.updateActivePlayerScore();
+
+    this.broadcastService.emitPlayers(this.players);
+    this.broadcastService.emitActivePlayerId(this.activePlayerId);
+  }
+
+  private handlePlayerBusted(): void {
+    this.setBusted(this.activePlayerId);
+    setTimeout(() => {
+      this.removePlayerBet(this.activePlayerId);
+      this.broadcastService.emitPlayers(this.players);
+    }, 500);
+    setTimeout(() => {
+      if (!this.setNextPlayer()) {
+        this.dealerPlay();
+      }
+      this.broadcastService.emitActivePlayerId(this.activePlayerId);
+    }, 1000);
+  }
+
+  private dealerPlay(): void {
+    this.setActivePlayer("");
+    this.updateDealerScore();
+
+    this.broadcastService.emitActivePlayerId(this.activePlayerId);
+    this.broadcastService.emitDealer(this.dealer);
+
+    if (this.checkIfAllBusted()) {
+      this.resetGame();
+      return;
+    }
+
+    const dealerInterval = setInterval(() => {
+      if (this.dealer.score >= 17) {
+        clearInterval(dealerInterval);
+        this.checkGameEnd();
+        return;
+      }
+      this.dealerHit();
+      this.broadcastService.emitDealer(this.dealer);
+    }, 500);
+  }
+
+  private checkGameEnd(): void {
+    const dealerScore = this.dealer.score;
+
+    if (!dealerScore) return;
+
+    this.players.forEach(({ id, score, isBusted }) => {
+      if (isBusted) {
+        return;
+      }
+
+      if (dealerScore <= 21 && score <= 21) {
+        if (dealerScore > score) {
+          console.log(id, "here in second if removePlayerBet");
+          this.removePlayerBet(id);
+          this.broadcastService.emitPlayers(this.players);
+          return;
+        }
+        if (score > dealerScore) {
+          console.log(
+            id,
+            "here in second if updateChipsPlayerWon",
+            score,
+            dealerScore
+          );
+          this.updateChipsPlayerWon(id);
+          this.broadcastService.emitPlayers(this.players);
+          return;
+        }
+      }
+
+      if (dealerScore > 21) {
+        console.log(id, "here in updateChipsPlayerWon");
+        if (this.dealer) {
+          this.dealer.isBusted = true;
+          this.broadcastService.emitDealer(this.dealer);
+        }
+        this.updateChipsPlayerWon(id);
+        this.broadcastService.emitPlayers(this.players);
+        return;
+      }
+      if (dealerScore === score) {
+        console.log(id, "here in updateChipsStandoff");
+        this.updateChipsStandoff(id);
+        this.broadcastService.emitPlayers(this.players);
+        return;
+      }
+    });
+    this.resetGame();
+  }
+
+  resetGame() {
+    let nextGameTimer = 5;
+    const countdownTimer = setInterval(() => {
+      nextGameTimer -= 1;
+      this.broadcastService.emitCountdownTimer(nextGameTimer);
+      if (nextGameTimer! <= 0) {
+        this.resetPlayers();
+        this.resetDealer();
+        this.deck = shuffleArray(createDeck());
+        this.setActivePlayer(this.playersIds[0]);
+        this.status = GameStatus.idle;
+        clearInterval(countdownTimer);
+        this.broadcastService.emitPlayers(this.players);
+        this.broadcastService.emitDealer(this.dealer);
+        this.broadcastService.emitActivePlayerId(this.activePlayerId);
+        this.broadcastService.emitStatus(this.status);
+      }
+    }, 1000);
+  }
+
+  private resetPlayers(): void {
+    this.players = this.players.map((player) => ({
+      ...player,
+      hand: [],
+      bet: [],
+      score: 0,
+      isBusted: false,
+    }));
+  }
+
+  private resetDealer(): void {
+    if (this.dealer) {
+      this.dealer.hand = [];
+      this.dealer.score = 0;
+      this.dealer.isBusted = false;
+    }
+  }
+
+  private updateChipsPlayerWon(playerId: string) {
+    const player = this.getPlayerById(playerId);
+    player.bet.forEach((value) => {
+      player.chips[value] += 2;
+    });
+  }
+
+  private updateChipsStandoff(playerId: string) {
+    const player = this.getPlayerById(playerId);
+    player.bet.forEach((value) => {
+      player.chips[value] += 1;
+    });
+  }
+
+  private dealerHit(): void {
+    this.dealer.hand.push(this.getCardFromTop());
+    this.updateDealerScore();
+  }
+
+  private checkIfAllBusted(): boolean {
+    return this.players.every(({ isBusted }) => isBusted);
+  }
+
+  private updateDealerScore(): void {
+    this.dealer.score = countScoreInHand(this.dealer.hand);
+  }
+
+  private updateActivePlayerScore(): void {
+    const activePlayer = this.getActivePlayer();
+    activePlayer.score = countScoreInHand(activePlayer.hand);
+  }
+
+  private deal(): void {
     const players = this.players.slice(-this.players.length);
 
     for (let i = 0; i < 2; i++) {
@@ -91,19 +280,19 @@ export class GameState {
         for (let j = 0; j <= players.length; j++) {
           setTimeout(() => {
             if (j === players.length) {
-              this.dealer?.hand.push(this.getCardFromTop());
-              this.broadcastOperator.emit("gameStateDealer", this.dealer);
+              this.dealer.hand.push(this.getCardFromTop());
+              this.broadcastService.emitDealer(this.dealer);
             } else {
               players[j].hand.push(this.getCardFromTop());
               players[j].score = countScoreInHand(players[j].hand);
-              this.broadcastOperator.emit("gameStatePlayers", this.players);
+              this.broadcastService.emitPlayers(this.players);
             }
           }, j * 500);
         }
       }, i * 500 * (this.playersIds.length + 1));
     }
     this.setActivePlayer(this.playersIds[0]);
-    this.broadcastOperator.emit("gameStateActivePlayerId", this.activePlayerId);
+    this.broadcastService.emitActivePlayerId(this.activePlayerId);
   }
 
   private getCardFromTop(): Card {
@@ -122,20 +311,23 @@ export class GameState {
     }
   }
 
-  private removePlayerChip(chipValue: ChipsValues) {
-    const player = this.getActivePlayer();
-    if (player) {
-      player.chips[chipValue]--;
-    }
+  private removePlayerChip(chipValue: ChipsValues): void {
+    this.getActivePlayer().chips[chipValue]--;
   }
 
-  private getActivePlayer() {
-    if (this.activePlayerId) {
-      return this.getPlayerById(this.activePlayerId);
-    }
+  private getActivePlayer(): Player {
+    return this.getPlayerById(this.activePlayerId);
   }
 
   private getPlayerById(playerId: string): Player {
     return this.players.find(({ id }) => id === playerId);
+  }
+
+  private setBusted(playerId: string): void {
+    this.getPlayerById(playerId).isBusted = true;
+  }
+
+  private removePlayerBet(playerId: string): void {
+    this.getPlayerById(playerId).bet = [];
   }
 }

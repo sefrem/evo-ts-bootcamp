@@ -10,10 +10,6 @@ import styles from './TableScreen.module.css';
 const TableScreen: React.VFC = observer(() => {
     const gameStore = useStore('GameStore');
 
-    React.useEffect(() => {
-        gameStore.startGame();
-    }, [gameStore]);
-
     return (
         <div className={styles.field}>
             {!!gameStore.nextGameTimer && <div>Next game in {gameStore.nextGameTimer}</div>}
