@@ -1,13 +1,57 @@
 
+.playerChips {
+    display: flex;
+    margin-top: auto;
+    background: var(--transparent-black);
+    width: 37.5em;
+    height: 4em;
+    border: 2px solid var(--grey);
+    border-radius: 4px;
+    align-items: center;
+    position: relative;
+}
+
+.balance {
+    margin-left: 2.5em;
+    color: var(--white);
+}
+
+.balanceTotal {
+    margin-left: 0.5em;
+    color: var(--gold);
+    font-weight: bold;
+}
+
+
 .chips {
     display: flex;
+    margin-left: 3em;
+    position: absolute;
+    right:0;
+    bottom: 20px;
+}
+
+.lastPlayerChips {
+    align-self: flex-end;
 }
 
 .chip {
+    display: flex;
     padding: 0.5em;
-    text-align: center;
 }
 
 .chipIcon {
     width: 4em;
+}
+
+.chipsQuantity {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--light-grey);
+    color: var(--white);
+    align-self: flex-end;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 4px;
 }

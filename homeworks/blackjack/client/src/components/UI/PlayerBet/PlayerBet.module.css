@@ -1,14 +1,63 @@
 
-.chips {
+.playerBet {
+    align-self: center;
     position: relative;
+}
+
+.buttonEndBet {
+    background: var(--coral);
+    color: var(--white);
+    position: absolute;
+    white-space: nowrap;
+    left: -188px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.placeBet {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    width: 9em;
+    height: 9em;
+    border: 3px solid var(--bet-border);
+    border-radius: 50%;
+    font-weight: bold;
+    color: var(--white);
+    margin-top: 0.8em;
+}
+
+.chips {
+    position: absolute;
     width: 4em;
     height: 4em;
 }
 
 .chip {
     position: absolute;
+    filter: drop-shadow(-3px 10px 3px var(--chip-shadow));
 }
 
 .chipIcon {
-    width: 4em;
+    width: 4.8em;
 }
+
+.totalBet {
+    background: var(--inactive);
+    position: absolute;
+    border-radius: 4px;
+    color: var(--white);
+    padding: 0.45em;
+    width: fit-content;
+    bottom: -6px;
+    transform: translateX(-50%);
+    left: 50%;
+}
+
+.totalBetQuantity {
+    font-weight: bold;
+    color: var(--gold);
+    margin-left: 0.5em;
+}
+

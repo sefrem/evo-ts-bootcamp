@@ -1,5 +1,3 @@
-// import { initialState } from '../stores/gameStore';
-
 export interface Card {
     rank: number | string;
     suit: Suits;
@@ -18,10 +16,6 @@ export interface GameState {
     dealer: Dealer;
     players: Player[];
 }
-
-// export type Players = keyof typeof initialState;
-
-// export type Players = '0' | '1' | '2';
 
 export type ChipsValues = '10' | '25' | '50' | '100';
 

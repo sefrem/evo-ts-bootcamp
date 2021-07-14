@@ -6,6 +6,7 @@ import PlayerBet from '../UI/PlayerBet/PlayerBet';
 import Hand from '../UI/Hand/Hand';
 import PlayerChips from '../UI/PlayerChips/PlayerChips';
 import { useStore } from '../../stores';
+import Button from '../UI/Button/Button';
 
 import styles from './Player.module.css';
 
@@ -16,30 +17,33 @@ type Props = {
 const GamePlayer: React.VFC<Props> = observer(({ player }) => {
     const gameStore = useStore('GameStore');
     const isActivePlayer = gameStore.activePlayerId === gameStore.playerId && gameStore.activePlayerId === player.id;
-    const showEndBettingBtn = gameStore.status === GameStatus.idle && isActivePlayer;
+    const showEndBetBtn = gameStore.status === GameStatus.idle && isActivePlayer;
     const isActivePlayerAndGameGoing = isActivePlayer && gameStore.status === GameStatus.playing;
 
     return (
         <div className={styles.player}>
-            {player?.isBusted ? <div style={{ height: 138 }}>BUSTED</div> : <PlayerBet chips={player.bet} />}
+            <div className={styles.playerHand}>
+                {isActivePlayerAndGameGoing && (
+                    <div className={styles.playerActionButtons}>
+                        <Button className={styles.buttonHit} disabled={player.isBusted} onClick={gameStore.hit}>
+                            Hit
+                        </Button>
+                        <Button className={styles.buttonStand} onClick={gameStore.stand}>
+                            Stand
+                        </Button>
+                    </div>
+                )}
+                <Hand data={player.hand} />
+            </div>
 
-            <span>{player?.name}: </span>
-            <span>{player?.score}</span>
+            <div className={styles.playerData}>
+                <div className={styles.playerScore}>{player.score}</div>
+                <span className={styles.playerName}>{player.name}</span>
+            </div>
 
-            <Hand data={player?.hand} />
+            <PlayerBet chips={player.bet} showEndBetBtn={showEndBetBtn} />
 
-            <PlayerChips chips={player?.chips} isActivePlayer={isActivePlayer} />
-
-            {showEndBettingBtn && <button onClick={gameStore.endBetting}>End Betting</button>}
-
-            {isActivePlayerAndGameGoing && (
-                <div>
-                    <button disabled={player?.isBusted} onClick={gameStore.hit}>
-                        Hit
-                    </button>
-                    <button onClick={gameStore.stand}>Stand</button>
-                </div>
-            )}
+            <PlayerChips chips={player.chips} />
         </div>
     );
 });

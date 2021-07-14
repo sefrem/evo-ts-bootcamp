@@ -1,8 +1,9 @@
 
+
 .field {
     width: 100%;
     height: 100%;
-    background: radial-gradient(var(--table-color-1), var(--table-color-2), var(--table-color-3));
+    background: radial-gradient(40% 56% at 50% 35%, var(--table-color-1) 0%, var(--table-color-2) 22%, var(--table-color-3) 139.9%, var(--table-color-4) 140%, var(--table-color-4) 155.9%, var(--table-color-5) 156%, var(--table-color-6) 180%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -17,5 +18,8 @@
 
 .players {
     display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
 }
 

@@ -26,8 +26,6 @@ export interface InitialState {
   dealer: Dealer;
 }
 
-// export type Dealer = Omit<Player, "chips">;
-
 export interface Dealer {
   id: number;
   name: string;
@@ -46,5 +44,3 @@ export enum GameStatus {
   playing = "playing",
   over = "over",
 }
-
-export type Bets = Record<string, ChipsValues[]>;

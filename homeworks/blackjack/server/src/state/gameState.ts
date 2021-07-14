@@ -21,13 +21,13 @@ const initialDealerState: Dealer = {
 };
 
 export class GameState {
-  public deck: Card[] = [];
+  private broadcastService: BroadcastService;
+  private deck: Card[] = [];
   public dealer: Dealer = initialDealerState;
   public playersIds: string[] = [];
   public activePlayerId: string = "";
   public status: GameStatus = GameStatus.idle;
   public players: Player[] = [];
-  private broadcastService: BroadcastService;
 
   constructor(broadcastOperator: BroadcastOperator<DefaultEventsMap>) {
     this.broadcastService = new BroadcastService(broadcastOperator);

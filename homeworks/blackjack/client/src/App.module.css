@@ -1,12 +1,25 @@
 
 :root {
-  --table-color-1: #129464;
-  --table-color-2: #02774D;
-  --table-color-3: #005834;
-  --card: #f6f6f6;
-  --card-border: #666666;
-  --card-red: red;
+  --table-color-1: #939DC6;
+  --table-color-2: #848EB2;
+  --table-color-3: #69708C;
+  --table-color-4: #9A8A79;
+  --table-color-5: #4A4D61;
+  --table-color-6: #686F8A;
+  --card-border: #6666665c;
+  --card-red: #DD7678;
   --card-position: 0;
+  --button-hit: #BFE698;
+  --button-stand: #F9E28E;
+  --coral: #EA748D;
+  --white: #f6f6f6;
+  --chip-shadow: rgba(37, 36, 47, 0.12);
+  --bet-border: rgba(255, 255, 255, 0.6);
+  --inactive: rgba(37, 36, 47, 0.6);
+  --gold: #F9E28E;
+  --transparent-black: rgba(37, 36, 47, 0.9);
+  --grey: rgba(255, 255, 255, 0.5);
+  --light-grey: rgba(255, 255, 255, 0.15);
 }
 
 .app {

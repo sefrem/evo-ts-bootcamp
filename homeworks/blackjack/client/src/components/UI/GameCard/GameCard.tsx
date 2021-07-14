@@ -6,6 +6,7 @@ import hearts from '../../../assets/icons/suits/heart.svg';
 import diamonds from '../../../assets/icons/suits/diamonds.svg';
 import clubs from '../../../assets/icons/suits/clubs.svg';
 import spades from '../../../assets/icons/suits/spades.svg';
+import cardBack from '../../../assets/icons/card_back.svg';
 
 import styles from './GameCard.module.css';
 
@@ -19,7 +20,9 @@ const GameCard: React.VFC<Props> = ({ rank, suit, faceDown }) => {
         <div className={clsx(styles.card, faceDown && styles.turnedCard)}>
             <div className={styles.cardFront}>
                 <div className={styles.cardValues}>
-                    <div className={clsx((suit === 'hearts' || suit === 'diamonds') && styles.red)}>{rank}</div>
+                    <div className={clsx(styles.cardValue, (suit === 'hearts' || suit === 'diamonds') && styles.red)}>
+                        {rank}
+                    </div>
                     <img className={styles.suitIconSmall} src={suitUrl} alt={`${rank} of ${suit}`} />
                 </div>
                 <div className={styles.cardField}>
@@ -27,7 +30,7 @@ const GameCard: React.VFC<Props> = ({ rank, suit, faceDown }) => {
                 </div>
             </div>
             <div className={styles.cardBack}>
-                <div className={styles.cardBackPattern} />
+                <img src={cardBack} className={styles.cardBackPattern} alt="" />
             </div>
         </div>
     );
