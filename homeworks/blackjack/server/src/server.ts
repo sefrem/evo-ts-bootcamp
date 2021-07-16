@@ -7,7 +7,7 @@ import { generateId } from '../utils';
 import { gameService } from './state/gameService';
 import { ChipsValues } from './types';
 
-const port = process.env.PORT || 4001;
+const port = process.env.PORT || 3000;
 
 const app = express();
 const httpServer = createServer(app);
@@ -83,4 +83,4 @@ io.on('connection', client => {
     });
 });
 
-// httpServer.listen(port, () => console.log(`Listening on port ${port}`));
+httpServer.listen(port, () => console.log(`Listening on port ${port}`));
