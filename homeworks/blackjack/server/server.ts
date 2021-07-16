@@ -81,4 +81,4 @@ io.on('connection', client => {
     });
 });
 
-// httpServer.listen(port, () => console.log(`Listening on port ${port}`));
+httpServer.listen(port, () => console.log(`Listening on port ${port}`));
