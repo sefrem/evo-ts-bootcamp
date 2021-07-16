@@ -3,7 +3,7 @@ import GameStore from '../stores/gameStore';
 import { ChipsValues, Dealer, GameStatus, InitialState, Player } from '../types/types';
 
 export class SocketEventService {
-    private ENDPOINT = 'https://git.heroku.com/dry-headland-71756.git';
+    private ENDPOINT = 'https://dry-headland-71756.herokuapp.com/';
     private socket: Socket;
     private store: GameStore;
 

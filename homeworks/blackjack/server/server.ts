@@ -1,37 +1,35 @@
-import express from 'express';
 import { createServer } from 'http';
 import { BroadcastOperator, Server } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-
-import { generateId } from '../utils';
-import { gameService } from './state/gameService';
-import { ChipsValues } from './types';
-
+import { generateId } from './utils';
+import { gameService } from './src/state/gameService';
+import { ChipsValues } from './src/types';
+const express = require('express');
 const port = process.env.PORT || 4001;
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:3000',
+        origin: '*',
         methods: ['GET', 'POST'],
         credentials: true,
     },
 });
 
-app.use(function (req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-
-    // Add this
-    if (req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, OPTIONS');
-        res.header('Access-Control-Max-Age', '120');
-        return res.status(200).json({});
-    }
-
-    next();
-});
+// app.use(function (req, res, next) {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//
+//     // Add this
+//     if (req.method === 'OPTIONS') {
+//         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, OPTIONS');
+//         res.header('Access-Control-Max-Age', '120');
+//         return res.status(200).json({});
+//     }
+//
+//     next();
+// });
 
 io.on('connection', client => {
     client.on('newGame', (playerId: string) => {
@@ -83,4 +81,4 @@ io.on('connection', client => {
     });
 });
 
-httpServer.listen(port, () => console.log(`Listening on port ${port}`));
+// httpServer.listen(port, () => console.log(`Listening on port ${port}`));
