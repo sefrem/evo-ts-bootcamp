@@ -8,15 +8,15 @@ import GameCard from '../GameCard/GameCard';
 import styles from './Hand.module.css';
 
 interface Props {
-    data: Card[] | undefined;
+    hand: Card[] | undefined;
     hideLast?: boolean;
 }
 
-const Hand: React.VFC<Props> = observer(({ data, hideLast = false }) => {
+const Hand: React.VFC<Props> = observer(({ hand, hideLast = false }) => {
     return (
         <div className={styles.hand}>
-            {data?.map(({ rank, suit }, index) => {
-                const faceDown = hideLast && index !== 0 && index === data.length - 1;
+            {hand?.map(({ rank, suit }, index) => {
+                const faceDown = hideLast && index !== 0 && index === hand.length - 1;
                 return (
                     <div className={clsx(styles.cardInHand, styles[`cardInHand-${index + 1}`])} key={rank + suit}>
                         <GameCard rank={rank} suit={suit} faceDown={faceDown} />

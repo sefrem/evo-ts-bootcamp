@@ -1,0 +1,34 @@
+
+.playerData {
+    display: flex;
+    align-items: center;
+    margin-left: 3.65em;
+}
+
+.playerFirst {
+    flex-direction: row-reverse;
+}
+
+.playerScore {
+    display: inline-block;
+    padding: 8px 12px;
+    background: var(--coral);
+    font-size: 1.1em;
+    color: var(--white);
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.inactiveBadge {
+    background: var(--inactive);
+}
+
+.playerName {
+    margin-left: 0.8em;
+    color: var(--white);
+}
+
+.playerFirstName {
+    margin-left: 0;
+    margin-right: 0.8em;
+}

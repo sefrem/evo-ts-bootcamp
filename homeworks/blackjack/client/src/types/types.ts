@@ -21,13 +21,15 @@ export type ChipsValues = '10' | '25' | '50' | '100';
 
 export type Chips = Record<ChipsValues, number>;
 
+export type PlayerRoundStatus = 'busted' | 'win' | 'lose' | 'standoff' | 'gameLost' | '';
+
 export interface Player {
     id: string;
     name: string;
     hand: Card[];
     score: number;
     chips: Chips;
-    isBusted: boolean;
+    roundStatus: PlayerRoundStatus;
     bet: ChipsValues[];
 }
 

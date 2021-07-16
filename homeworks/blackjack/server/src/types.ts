@@ -1,46 +1,46 @@
 export interface Card {
-  rank: number | string;
-  suit: Suits;
+    rank: number | string;
+    suit: Suits;
 }
 
-export type Suits = "hearts" | "spades" | "diamonds" | "clubs";
+export type Suits = 'hearts' | 'spades' | 'diamonds' | 'clubs';
 
-export type ChipsValues = "10" | "25" | "50" | "100";
+export type ChipsValues = '10' | '25' | '50' | '100';
 
 export type Chips = Record<ChipsValues, number>;
 
 export interface Player {
-  id: string;
-  name: string;
-  hand: Card[];
-  score: number;
-  chips: Chips;
-  isBusted: boolean;
-  bet: ChipsValues[];
+    id: string;
+    name: string;
+    hand: Card[];
+    score: number;
+    chips: Chips;
+    roundStatus: 'busted' | 'win' | 'lose' | 'gameLost' | 'standoff' | '';
+    bet: ChipsValues[];
 }
 
 export interface InitialState {
-  players: Player[];
-  activePlayerId: string;
-  status: GameStatus;
-  dealer: Dealer;
+    players: Player[];
+    activePlayerId: string;
+    status: GameStatus;
+    dealer: Dealer;
 }
 
 export interface Dealer {
-  id: number;
-  name: string;
-  hand: Card[];
-  score: number;
-  isBusted: boolean;
+    id: number;
+    name: string;
+    hand: Card[];
+    score: number;
+    roundStatus: 'busted' | '';
 }
 
 export interface State {
-  dealer: Dealer;
-  players: Player[];
+    dealer: Dealer;
+    players: Player[];
 }
 
 export enum GameStatus {
-  idle = "idle",
-  playing = "playing",
-  over = "over",
+    idle = 'idle',
+    playing = 'playing',
+    over = 'over',
 }

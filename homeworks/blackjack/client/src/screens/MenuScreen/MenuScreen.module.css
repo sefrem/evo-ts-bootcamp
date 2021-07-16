@@ -1,0 +1,71 @@
+
+.mainMenu {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.menuBackground {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.newGameBtn {
+    background: var(--coral);
+    color: var(--white);
+    font-size: 1.5em;
+    font-weight: bold;
+    position: absolute;
+    left: 50%;
+    bottom: 2em;
+    transform: translate(-50%, -50%);
+}
+
+.pendingGame {
+    background: radial-gradient(41.66% 58.16% at 49.25% 7.14%, var(--table-color-1) 0%, var(--table-color-2) 21.66%, var(--table-color-3) 100%);
+    border-radius: 8px;
+    width: 40em;
+    height: 23em;
+}
+
+.spinner {
+    animation: rotate 2s linear infinite;
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -25px 0 0 -25px;
+    width: 50px;
+    height: 50px;
+
+}
+
+.spinner .path {
+    stroke: hsl(180, 6%, 93%);
+    stroke-linecap: round;
+    animation: dash 1.5s ease-in-out infinite;
+}
+
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+

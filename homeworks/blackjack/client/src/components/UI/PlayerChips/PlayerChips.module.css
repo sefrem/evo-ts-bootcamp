@@ -8,6 +8,7 @@
     border: 2px solid var(--grey);
     border-radius: 4px;
     align-items: center;
+    align-self: center;
     position: relative;
 }
 
@@ -22,17 +23,26 @@
     font-weight: bold;
 }
 
-
 .chips {
     display: flex;
     margin-left: 3em;
     position: absolute;
     right:0;
-    bottom: 20px;
+    bottom: 1.25em;
 }
 
 .lastPlayerChips {
-    align-self: flex-end;
+   flex-direction: row-reverse;
+}
+
+.lastPlayerBalance {
+    margin-right: 2.5em;
+    margin-left: 0;
+}
+
+.lastChips {
+    left: 0;
+    margin-left: 0;
 }
 
 .chip {
@@ -42,6 +52,7 @@
 
 .chipIcon {
     width: 4em;
+    cursor: pointer;
 }
 
 .chipsQuantity {

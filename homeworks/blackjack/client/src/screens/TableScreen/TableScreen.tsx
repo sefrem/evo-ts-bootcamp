@@ -2,8 +2,8 @@ import React from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '../../stores';
-import Hand from '../../components/UI/Hand/Hand';
-import GamePlayer from '../../components/Player/Player';
+import GameDealer from '../../components/Table/GameDealer/GameDealer';
+import GamePlayer from '../../components/Table/GamePlayer/GamePlayer';
 
 import styles from './TableScreen.module.css';
 
@@ -12,17 +12,19 @@ const TableScreen: React.VFC = observer(() => {
 
     return (
         <div className={styles.field}>
-            {!!gameStore.nextGameTimer && <div>Next game in {gameStore.nextGameTimer}</div>}
+            {!!gameStore.nextGameTimer && (
+                <div className={styles.nextGameTimer}>
+                    Next game in <div className={styles.timerCount}>{gameStore.nextGameTimer}</div>
+                </div>
+            )}
 
             <div className={styles.dealer}>
-                <span>Dealer:</span>
-                <span>{gameStore.dealer?.score}</span>
-                <Hand data={gameStore.dealer?.hand} hideLast={!!gameStore.activePlayerId} />
+                <GameDealer />
             </div>
 
             <div className={styles.players}>
-                {gameStore.players.map(player => (
-                    <GamePlayer key={player.id} player={player} />
+                {gameStore.players.map((player, index) => (
+                    <GamePlayer key={player.id} player={player} index={index} />
                 ))}
             </div>
         </div>

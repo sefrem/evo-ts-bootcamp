@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction, toJS } from 'mobx';
+import { makeAutoObservable, runInAction } from 'mobx';
 import socketIOClient, { Socket } from 'socket.io-client';
 
 import { manageClientId } from '../utils';
@@ -112,8 +112,11 @@ export default class GameStore {
         this.socket.emit('stand', this.playerId);
     }
 
-    isLastPlayer(): boolean {
-        console.log(toJS(this.playersIds), toJS(this.playerId));
-        return this.playersIds.indexOf(this.playerId) === this.playersIds.length - 1;
+    playerHasBet(): boolean {
+        return !!this.players.find(({ id }) => id === this.playerId)?.bet.length;
+    }
+
+    isActivePlayerAndClient(id: string): boolean {
+        return this.activePlayerId === this.playerId && this.activePlayerId === id;
     }
 }
