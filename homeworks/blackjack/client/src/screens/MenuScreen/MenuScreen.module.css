@@ -11,6 +11,21 @@
     object-fit: cover;
 }
 
+.badge {
+    position: absolute;
+    top: -3em;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.modalMessage {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: var(--white);
+    max-width: 17em;
+    line-height: 1.4em;
+}
+
 .newGameBtn {
     background: var(--coral);
     color: var(--white);
@@ -22,50 +37,17 @@
     transform: translate(-50%, -50%);
 }
 
-.pendingGame {
+.mainModal {
     background: radial-gradient(41.66% 58.16% at 49.25% 7.14%, var(--table-color-1) 0%, var(--table-color-2) 21.66%, var(--table-color-3) 100%);
     border-radius: 8px;
     width: 40em;
     height: 23em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .spinner {
-    animation: rotate 2s linear infinite;
-    z-index: 2;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -25px 0 0 -25px;
-    width: 50px;
-    height: 50px;
-
+    margin-top: 3em;
 }
-
-.spinner .path {
-    stroke: hsl(180, 6%, 93%);
-    stroke-linecap: round;
-    animation: dash 1.5s ease-in-out infinite;
-}
-
-
-@keyframes rotate {
-    100% {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes dash {
-    0% {
-        stroke-dasharray: 1, 150;
-        stroke-dashoffset: 0;
-    }
-    50% {
-        stroke-dasharray: 90, 150;
-        stroke-dashoffset: -35;
-    }
-    100% {
-        stroke-dasharray: 90, 150;
-        stroke-dashoffset: -124;
-    }
-}
-

@@ -13,9 +13,11 @@ const GameDealer = observer(() => {
     const isBusted = gameStore.dealer?.roundStatus === 'busted';
 
     return (
-        <div className={styles.dealer}>
-            {isBusted && <img src={bustedBadge} alt="" />}
-            <Hand hand={gameStore.dealer?.hand} hideLast={!!gameStore.activePlayerId} />
+        <div>
+            <div className={styles.dealerHand}>
+                {isBusted && <img src={bustedBadge} className={styles.dealerBadge} alt="" />}
+                <Hand hand={gameStore.dealer?.hand} hideLast={!!gameStore.activePlayerId} />
+            </div>
             <PlayerData id="" name="Dealer" score={gameStore.dealer?.score} />
         </div>
     );

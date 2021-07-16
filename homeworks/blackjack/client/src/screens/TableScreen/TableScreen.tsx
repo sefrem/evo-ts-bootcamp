@@ -14,7 +14,7 @@ const TableScreen: React.VFC = observer(() => {
         <div className={styles.field}>
             {!!gameStore.nextGameTimer && (
                 <div className={styles.nextGameTimer}>
-                    Next game in <div className={styles.timerCount}>{gameStore.nextGameTimer}</div>
+                    Next round in <div className={styles.timerCount}>{gameStore.nextGameTimer}</div>
                 </div>
             )}
 

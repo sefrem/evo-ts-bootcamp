@@ -1,13 +1,11 @@
 import { makeAutoObservable, runInAction } from 'mobx';
-import socketIOClient, { Socket } from 'socket.io-client';
 
 import { manageClientId } from '../utils';
 import { ChipsValues, Dealer, GameStatus, InitialState, Player } from '../types/types';
-
-const ENDPOINT = 'http://127.0.0.1:4001';
+import { SocketEventService } from '../services/SocketEventService';
 
 export default class GameStore {
-    private socket: Socket;
+    private eventEmitter: SocketEventService;
     playerId: string = '';
     playersIds: string[] = [];
     status: GameStatus | null = null;
@@ -16,67 +14,11 @@ export default class GameStore {
     players: Player[] = [];
     nextGameTimer: number | null = null;
     gameCode: string = '';
+    hitDisabled: boolean = false;
 
     constructor() {
         this.playerId = manageClientId();
-        this.socket = socketIOClient(ENDPOINT);
-
-        this.socket.on('gameCode', (gameCode: string) => {
-            window.history.pushState({}, '', gameCode);
-        });
-
-        this.socket.on('addPlayer', playerId => {
-            runInAction(() => {
-                this.playerId = playerId;
-            });
-        });
-
-        this.socket.on('gameStateInitial', ({ dealer, players, activePlayerId, status }: InitialState) => {
-            runInAction(() => {
-                this.dealer = dealer;
-                this.players = players;
-                this.activePlayerId = activePlayerId;
-                this.status = status;
-            });
-        });
-
-        this.socket.on('gameStatePlayers', (players: Player[]) => {
-            runInAction(() => {
-                this.players = players;
-            });
-        });
-
-        this.socket.on('gameStateDealer', (dealer: Dealer) => {
-            runInAction(() => {
-                this.dealer = dealer;
-            });
-        });
-
-        this.socket.on('gameStateActivePlayerId', (activePlayerId: string) => {
-            runInAction(() => {
-                this.activePlayerId = activePlayerId;
-            });
-        });
-
-        this.socket.on('gameStateStatus', (status: GameStatus) => {
-            runInAction(() => {
-                this.status = status;
-            });
-        });
-
-        this.socket.on('gameStateCountdownTimer', (timer: number) => {
-            runInAction(() => {
-                this.nextGameTimer = timer;
-            });
-        });
-
-        this.socket.on('unknownGame', () => {
-            console.log('Unknown game');
-        });
-
-        this.socket.on('disconnect', () => {
-            this.socket.connect();
-        });
+        this.eventEmitter = new SocketEventService(this);
 
         makeAutoObservable(
             this,
@@ -87,36 +29,89 @@ export default class GameStore {
         );
     }
 
-    startNewGame() {
-        this.socket.emit('newGame', this.playerId);
+    setGameCode(gameCode: string): void {
+        this.gameCode = gameCode;
+        window.history.pushState({}, '', gameCode);
     }
 
-    joinGame(gameCode: string) {
-        this.socket.emit('joinGame', { roomName: gameCode, playerId: this.playerId });
+    setPlayerId(playerId: string): void {
+        this.playerId = playerId;
     }
 
-    setBet(chipValue: ChipsValues) {
+    setInitialState({ dealer, players, activePlayerId, status }: InitialState): void {
+        this.dealer = dealer;
+        this.players = players;
+        this.activePlayerId = activePlayerId;
+        this.status = status;
+    }
+
+    setPlayers(players: Player[]): void {
+        this.players = players;
+        setTimeout(() => {
+            runInAction(() => {
+                this.hitDisabled = false;
+            });
+        }, 500);
+    }
+
+    setDealer(dealer: Dealer): void {
+        this.dealer = dealer;
+    }
+
+    setActivePlayerId(activePlayerId: string): void {
+        this.activePlayerId = activePlayerId;
+    }
+
+    setGameStatus(status: GameStatus): void {
+        this.status = status;
+    }
+
+    setCountdown(timer: number) {
+        this.nextGameTimer = timer;
+    }
+
+    startNewGame(): void {
+        this.eventEmitter.startNewGame(this.playerId);
+    }
+
+    joinGame(gameCode: string): void {
+        this.eventEmitter.joinGame(gameCode, this.playerId);
+    }
+
+    setBet(chipValue: ChipsValues): void {
         if (this.playerId !== this.activePlayerId) return;
-        this.socket.emit('setBet', { playerId: this.playerId, chipValue });
+        this.eventEmitter.setBet(this.playerId, chipValue);
     }
 
-    endBetting() {
-        this.socket.emit('endBetting', this.playerId);
+    endBetting(): void {
+        this.eventEmitter.endBetting(this.playerId);
     }
 
-    hit() {
-        this.socket.emit('hit', this.playerId);
+    hit(): void {
+        this.eventEmitter.hit(this.playerId);
+
+        runInAction(() => {
+            this.hitDisabled = true;
+        });
     }
 
-    stand() {
-        this.socket.emit('stand', this.playerId);
+    stand(): void {
+        this.eventEmitter.stand(this.playerId);
     }
 
     playerHasBet(): boolean {
         return !!this.players.find(({ id }) => id === this.playerId)?.bet.length;
     }
 
-    isActivePlayerAndClient(id: string): boolean {
-        return this.activePlayerId === this.playerId && this.activePlayerId === id;
+    isActivePlayerAndClient(playerId: string): boolean {
+        return this.activePlayerId === this.playerId && this.activePlayerId === playerId;
+    }
+
+    isActivePlayerAndGameGoing(playerId: string): boolean {
+        return this.isActivePlayerAndClient(playerId) && this.status === GameStatus.playing;
+    }
+
+    showEndBetBtn(playerId: string): boolean {
+        return this.isActivePlayerAndClient(playerId) && this.playerHasBet() && this.status === GameStatus.idle;
     }
 }

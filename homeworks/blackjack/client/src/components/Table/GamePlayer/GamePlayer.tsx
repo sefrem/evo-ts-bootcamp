@@ -1,7 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { computed } from 'mobx';
 
-import { GameStatus, Player } from '../../../types/types';
+import { Player } from '../../../types/types';
 import PlayerBet from '../../UI/PlayerBet/PlayerBet';
 import Hand from '../../UI/Hand/Hand';
 import PlayerChips from '../../UI/PlayerChips/PlayerChips';
@@ -19,24 +20,26 @@ type Props = {
 
 const GamePlayer: React.VFC<Props> = observer(({ player, index }) => {
     const gameStore = useStore('GameStore');
-    const isActivePlayerAndClient = gameStore.isActivePlayerAndClient(player.id);
-    const showEndBetBtn = gameStore.status === GameStatus.idle && isActivePlayerAndClient && gameStore.playerHasBet();
-    const isActivePlayerAndGameGoing = isActivePlayerAndClient && gameStore.status === GameStatus.playing;
+    const isActivePlayerAndGameGoing = computed(() => gameStore.isActivePlayerAndGameGoing(player.id)).get();
     const isBusted = player.roundStatus === 'busted';
 
     return (
         <div className={styles.player}>
             <div className={styles.playerHand}>
-                {isActivePlayerAndGameGoing && (
+                {isActivePlayerAndGameGoing ? (
                     <div className={styles.playerActionButtons}>
-                        <Button className={styles.buttonHit} disabled={isBusted} onClick={gameStore.hit}>
+                        <Button
+                            className={styles.buttonHit}
+                            disabled={isBusted || gameStore.hitDisabled}
+                            onClick={gameStore.hit}
+                        >
                             Hit
                         </Button>
                         <Button className={styles.buttonStand} onClick={gameStore.stand}>
                             Stand
                         </Button>
                     </div>
-                )}
+                ) : null}
 
                 <div className={styles.statusBadge}>
                     <PlayerBadge status={player.roundStatus} />
@@ -49,7 +52,7 @@ const GamePlayer: React.VFC<Props> = observer(({ player, index }) => {
                 <PlayerData id={player.id} name={player.name} score={player.score} index={index} />
             </div>
 
-            <PlayerBet chips={player.bet} showEndBetBtn={showEndBetBtn} />
+            <PlayerBet chips={player.bet} playerId={player.id} />
 
             <PlayerChips chips={player.chips} index={index} />
         </div>

@@ -1,20 +1,22 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { computed } from 'mobx';
 
 import Button from '../Button/Button';
 import { ChipsValues } from '../../../types/types';
 import { getChipIconPath } from '../../../utils';
+import { useStore } from '../../../stores';
 
 import styles from './PlayerBet.module.css';
-import { useStore } from '../../../stores';
 
 interface Props {
     chips: ChipsValues[];
-    showEndBetBtn: boolean;
+    playerId: string;
 }
 
-const PlayerBet: React.VFC<Props> = observer(({ chips, showEndBetBtn }) => {
+const PlayerBet: React.VFC<Props> = observer(({ chips, playerId }) => {
     const gameStore = useStore('GameStore');
+    const showEndBetBtn = computed(() => gameStore.showEndBetBtn(playerId)).get();
     let total = 0;
 
     return (

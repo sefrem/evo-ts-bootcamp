@@ -54,8 +54,10 @@ class GameService {
         return this.clientRooms[playerId];
     }
 
-    removeRoom(roomName: string) {
-        delete this.state[roomName];
+    public removeRoom(roomName: string): void {
+        if (this.state[roomName]) {
+            delete this.state[roomName];
+        }
     }
 }
 

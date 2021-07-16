@@ -60,16 +60,12 @@ io.on('connection', client => {
 
     client.on('stand', (playerId: string) => gameService.stand(playerId));
 
-    // client.on("disconnecting", () => {
-    //   client.rooms.forEach((roomName) => {
-    //     const room = io.sockets.adapter.rooms.get(roomName);
-    //     if (room.size === 1) {
-    //       console.log("client room", room);
-    //       room.delete(roomName);
-    //       gameService.removeRoom(roomName);
-    //     }
-    //   });
-    // });
+    io.sockets.adapter.on('leave-room', room => {
+        const size = io.sockets.adapter.rooms.get(room).size;
+        if (size === 0) {
+            gameService.removeRoom(room);
+        }
+    });
 });
 
 httpServer.listen(port, () => console.log(`Listening on port ${port}`));
