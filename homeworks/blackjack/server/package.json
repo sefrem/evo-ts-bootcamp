@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "webpack && node dist/main.js",
     "start-dev": "node dist/main.js",
     "build": "webpack"
   },
