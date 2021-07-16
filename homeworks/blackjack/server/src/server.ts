@@ -7,7 +7,7 @@ import { generateId } from '../utils';
 import { gameService } from './state/gameService';
 import { ChipsValues } from './types';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4001;
 
 const app = express();
 const httpServer = createServer(app);
