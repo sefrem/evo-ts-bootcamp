@@ -5,7 +5,7 @@ import { generateId } from './utils';
 import { gameService } from './src/state/gameService';
 import { ChipsValues } from './src/types';
 const express = require('express');
-const port = process.env.PORT || 4001;
+const port = process.env.PORT || 80;
 
 const app = express();
 const httpServer = createServer(app);
@@ -16,6 +16,8 @@ const io = new Server(httpServer, {
         allowedHeaders: ['content-type'],
     },
 });
+
+// app.listen(port, () => console.log(`Listening on port ${port}`));
 
 // app.use(function (req, res, next) {
 //     res.header('Access-Control-Allow-Origin', '*');

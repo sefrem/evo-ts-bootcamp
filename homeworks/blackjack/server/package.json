@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack && node dist/main.js",
-    "start-dev": "node dist/main.js",
+    "start-dev": "ts-node index.ts",
     "build": "webpack"
   },
   "dependencies": {
