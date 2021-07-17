@@ -1,9 +1,9 @@
 import socketIOClient, { Socket } from 'socket.io-client';
 import GameStore from '../stores/gameStore';
 import { ChipsValues, Dealer, GameStatus, InitialState, Player } from '../types/types';
-//    private ENDPOINT = 'https://dry-headland-71756.herokuapp.com/';
+
 export class SocketEventService {
-    private ENDPOINT = 'http://localhost:8080/';
+    private ENDPOINT = 'https://dry-headland-71756.herokuapp.com/';
     private socket: Socket;
     private store: GameStore;
 
