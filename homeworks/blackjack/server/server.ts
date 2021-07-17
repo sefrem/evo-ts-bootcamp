@@ -1,11 +1,17 @@
+import express from 'express';
 import { createServer } from 'http';
 import { BroadcastOperator, Server } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
+
 import { generateId } from './utils';
 import { gameService } from './src/state/gameService';
 import { ChipsValues } from './src/types';
-const express = require('express');
-const port = process.env.PORT || 80;
+
+const port = Number(process.env.PORT) || 8080;
+// const appRoot = require('app-root-path');
+// const app = express();
+// const httpServer = createServer(app);
+// const io = new Server(httpServer);
 
 const app = express();
 const httpServer = createServer(app);
@@ -13,10 +19,10 @@ const io = new Server(httpServer, {
     cors: {
         origin: '*',
         methods: ['GET', 'POST'],
-        allowedHeaders: ['content-type'],
     },
 });
-
+// const io = require('socket.io')(httpServer);
+// app.get('/', (req: any, res: any) => res.sendFile(appRoot + '/client/public/index.html'));
 // app.listen(port, () => console.log(`Listening on port ${port}`));
 
 // app.use(function (req, res, next) {
@@ -33,7 +39,7 @@ const io = new Server(httpServer, {
 //     next();
 // });
 
-io.on('connection', client => {
+io.on('connection', (client: any) => {
     client.on('newGame', (playerId: string) => {
         const roomName = generateId(5);
         const broadcastOperator: BroadcastOperator<DefaultEventsMap> = io.sockets.in(roomName);
@@ -75,7 +81,7 @@ io.on('connection', client => {
 
     client.on('stand', (playerId: string) => gameService.stand(playerId));
 
-    io.sockets.adapter.on('leave-room', room => {
+    io.sockets.adapter.on('leave-room', (room: string) => {
         const size = io.sockets.adapter.rooms.get(room).size;
         if (size === 0) {
             gameService.removeRoom(room);
