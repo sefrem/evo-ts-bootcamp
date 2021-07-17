@@ -12,9 +12,6 @@
     "express": "^4.17.1",
     "socket.io": "^4.1.2"
   },
-  "engines": {
-    "node": "12.17.x"
-  },
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^15.6.1",
