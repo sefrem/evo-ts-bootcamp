@@ -11,10 +11,7 @@ const App: React.VFC = observer(() => {
     const gameStore = useStore('GameStore');
 
     React.useEffect(() => {
-        const gameCode = window.location.pathname.slice(1);
-        if (gameCode) {
-            gameStore.joinGame(gameCode);
-        }
+        gameStore.checkGameCode();
     }, [gameStore]);
 
     return <div className={styles.app}>{gameStore.players.length > 0 ? <TableScreen /> : <MenuScreen />}</div>;

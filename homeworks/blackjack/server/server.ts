@@ -8,10 +8,6 @@ import { gameService } from './src/state/gameService';
 import { ChipsValues } from './src/types';
 
 const port = Number(process.env.PORT) || 8080;
-// const appRoot = require('app-root-path');
-// const app = express();
-// const httpServer = createServer(app);
-// const io = new Server(httpServer);
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,23 +17,6 @@ const io = new Server(httpServer, {
         methods: ['GET', 'POST'],
     },
 });
-// const io = require('socket.io')(httpServer);
-// app.get('/', (req: any, res: any) => res.sendFile(appRoot + '/client/public/index.html'));
-// app.listen(port, () => console.log(`Listening on port ${port}`));
-
-// app.use(function (req, res, next) {
-//     res.header('Access-Control-Allow-Origin', '*');
-//     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//
-//     // Add this
-//     if (req.method === 'OPTIONS') {
-//         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, OPTIONS');
-//         res.header('Access-Control-Max-Age', '120');
-//         return res.status(200).json({});
-//     }
-//
-//     next();
-// });
 
 io.on('connection', (client: any) => {
     client.on('newGame', (playerId: string) => {

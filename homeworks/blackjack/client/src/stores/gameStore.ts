@@ -31,7 +31,17 @@ export default class GameStore {
 
     setGameCode(gameCode: string): void {
         this.gameCode = gameCode;
-        window.history.pushState({}, '', gameCode);
+        const url = new URLSearchParams(window.location.search);
+        url.append('code', gameCode);
+        window.history.pushState({}, '', `?${url.toString()}`);
+    }
+
+    checkGameCode(): void {
+        const params = new URLSearchParams(window.location.search);
+        const gameCode = params.get('code');
+        if (gameCode) {
+            this.joinGame(gameCode);
+        }
     }
 
     setPlayerId(playerId: string): void {
