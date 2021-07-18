@@ -5,7 +5,7 @@ import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 import { generateId } from '../utils';
 import { gameService } from './state/gameService';
-import { ChipsValues } from './types';
+import { ChipsValues } from './types/types';
 
 const port = Number(process.env.PORT) || 8080;
 
@@ -60,7 +60,7 @@ io.on('connection', (client: any) => {
 
     client.on('stand', (playerId: string) => gameService.stand(playerId));
 
-    io.sockets.adapter.on('leave-room', (room: string) => {
+    io.sockets.adapter.once('leave-room', (room: string) => {
         const size = io.sockets.adapter.rooms.get(room).size;
         if (size === 0) {
             gameService.removeRoom(room);

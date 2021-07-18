@@ -1,9 +1,10 @@
 import socketIOClient, { Socket } from 'socket.io-client';
+
 import GameStore from '../stores/gameStore';
 import { ChipsValues, Dealer, GameStatus, InitialState, Player } from '../types/types';
 
 export class SocketEventService {
-    private ENDPOINT = 'https://dry-headland-71756.herokuapp.com/';
+    private ENDPOINT = process.env.REACT_APP_PATH || 'https://dry-headland-71756.herokuapp.com/';
     private socket: Socket;
     private store: GameStore;
 
@@ -35,6 +36,10 @@ export class SocketEventService {
             this.store.setActivePlayerId(activePlayerId);
         });
 
+        this.socket.on('gameStatePlayersIds', (playersIds: string[]) => {
+            this.store.setPlayersIds(playersIds);
+        });
+
         this.socket.on('gameStateStatus', (status: GameStatus) => {
             this.store.setGameStatus(status);
         });
@@ -44,7 +49,7 @@ export class SocketEventService {
         });
 
         this.socket.on('unknownGame', () => {
-            console.log('Unknown game');
+            this.store.setShowUnknownGameModal();
         });
 
         this.socket.on('disconnect', () => {

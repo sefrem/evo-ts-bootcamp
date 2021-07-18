@@ -36,7 +36,7 @@
 
 .chip {
     position: absolute;
-    filter: drop-shadow(-3px 10px 3px var(--chip-shadow));
+    filter: var(--shadow);
 }
 
 .chipIcon {

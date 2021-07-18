@@ -1,5 +1,3 @@
-// Generated using webpack-cli https://github.com/webpack/webpack-cli
-
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 
@@ -9,7 +7,7 @@ const config = {
     entry: './src/index.ts',
     output: {
         filename: 'server.js',
-        path: path.resolve(__dirname),
+        path: path.resolve(__dirname, 'dist'),
     },
     target: 'node',
     module: {

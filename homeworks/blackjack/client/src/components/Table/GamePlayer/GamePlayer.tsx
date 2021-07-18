@@ -21,7 +21,7 @@ type Props = {
 const GamePlayer: React.VFC<Props> = observer(({ player, index }) => {
     const gameStore = useStore('GameStore');
     const isActivePlayerAndGameGoing = computed(() => gameStore.isActivePlayerAndGameGoing(player.id)).get();
-    const isBusted = player.roundStatus === 'busted';
+    const isBusted = player.status === 'busted';
 
     return (
         <div className={styles.player}>
@@ -42,7 +42,7 @@ const GamePlayer: React.VFC<Props> = observer(({ player, index }) => {
                 ) : null}
 
                 <div className={styles.statusBadge}>
-                    <PlayerBadge status={player.roundStatus} />
+                    <PlayerBadge status={player.status} />
                 </div>
 
                 <Hand hand={player.hand} />

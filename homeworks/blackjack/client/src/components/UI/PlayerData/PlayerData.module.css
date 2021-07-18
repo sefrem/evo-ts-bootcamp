@@ -2,7 +2,6 @@
 .playerData {
     display: flex;
     align-items: center;
-    margin-left: 3.65em;
 }
 
 .playerFirst {

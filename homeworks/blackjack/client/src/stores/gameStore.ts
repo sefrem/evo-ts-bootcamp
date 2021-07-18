@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
-import { manageClientId } from '../utils';
+import { appendGameCodeToUrl, getGameCodeFromUrl, manageClientId } from '../utils';
 import { ChipsValues, Dealer, GameStatus, InitialState, Player } from '../types/types';
 import { SocketEventService } from '../services/SocketEventService';
 
@@ -15,6 +15,7 @@ export default class GameStore {
     nextGameTimer: number | null = null;
     gameCode: string = '';
     hitDisabled: boolean = false;
+    showUnknownGameModal: boolean = false;
 
     constructor() {
         this.playerId = manageClientId();
@@ -31,14 +32,11 @@ export default class GameStore {
 
     setGameCode(gameCode: string): void {
         this.gameCode = gameCode;
-        const url = new URLSearchParams(window.location.search);
-        url.append('code', gameCode);
-        window.history.pushState({}, '', `?${url.toString()}`);
+        appendGameCodeToUrl(gameCode);
     }
 
     checkGameCode(): void {
-        const params = new URLSearchParams(window.location.search);
-        const gameCode = params.get('code');
+        const gameCode = getGameCodeFromUrl();
         if (gameCode) {
             this.joinGame(gameCode);
         }
@@ -72,12 +70,20 @@ export default class GameStore {
         this.activePlayerId = activePlayerId;
     }
 
+    setPlayersIds(playersIds: string[]): void {
+        this.playersIds = playersIds;
+    }
+
     setGameStatus(status: GameStatus): void {
         this.status = status;
     }
 
-    setCountdown(timer: number) {
+    setCountdown(timer: number): void {
         this.nextGameTimer = timer;
+    }
+
+    setShowUnknownGameModal(): void {
+        this.showUnknownGameModal = true;
     }
 
     startNewGame(): void {
@@ -123,5 +129,9 @@ export default class GameStore {
 
     showEndBetBtn(playerId: string): boolean {
         return this.isActivePlayerAndClient(playerId) && this.playerHasBet() && this.status === GameStatus.idle;
+    }
+
+    closeUnknownGameModal(): void {
+        this.showUnknownGameModal = false;
     }
 }

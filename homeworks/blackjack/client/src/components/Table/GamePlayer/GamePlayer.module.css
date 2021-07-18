@@ -33,6 +33,7 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 99;
+    filter: var(--shadow);
 }
 
 .playerDataWrapper {

@@ -21,7 +21,7 @@ export type ChipsValues = '10' | '25' | '50' | '100';
 
 export type Chips = Record<ChipsValues, number>;
 
-export type PlayerRoundStatus = 'busted' | 'win' | 'lose' | 'standoff' | 'gameLost' | '';
+export type PlayerStatus = 'busted' | 'win' | 'lose' | 'standoff' | 'gameLost' | 'bankrupt' | '';
 
 export interface Player {
     id: string;
@@ -29,7 +29,7 @@ export interface Player {
     hand: Card[];
     score: number;
     chips: Chips;
-    roundStatus: PlayerRoundStatus;
+    status: PlayerStatus;
     bet: ChipsValues[];
 }
 

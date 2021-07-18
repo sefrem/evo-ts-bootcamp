@@ -15,7 +15,7 @@ export interface Player {
     hand: Card[];
     score: number;
     chips: Chips;
-    roundStatus: 'busted' | 'win' | 'lose' | 'gameLost' | 'standoff' | '';
+    status: 'busted' | 'win' | 'lose' | 'gameLost' | 'standoff' | 'bankrupt' | '';
     bet: ChipsValues[];
 }
 

@@ -1,4 +1,4 @@
-import { Card } from "../src/types";
+import { Card } from "../src/types/types";
 
 export function countScoreInHand(hand: Card[]): number {
   let score = 0;

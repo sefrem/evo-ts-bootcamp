@@ -2,7 +2,7 @@ import { BroadcastOperator } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 import { GameState } from './gameState';
-import { ChipsValues, InitialState } from '../types';
+import { ChipsValues, InitialState } from '../types/types';
 
 class GameService {
     private clientRooms: Record<string, string> = {};

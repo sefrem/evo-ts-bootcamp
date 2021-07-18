@@ -4,7 +4,7 @@ import chip25 from '../assets/icons/chips/chip_25.svg';
 import chip50 from '../assets/icons/chips/chip_50.svg';
 import chip100 from '../assets/icons/chips/chip_100.svg';
 
-export const getChipIconPath = (value: ChipsValues) => {
+export function getChipIconPath(value: ChipsValues) {
     switch (value) {
         case '10':
             return chip10;
@@ -15,4 +15,4 @@ export const getChipIconPath = (value: ChipsValues) => {
         case '100':
             return chip100;
     }
-};
+}

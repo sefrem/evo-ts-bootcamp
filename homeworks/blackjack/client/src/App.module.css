@@ -21,6 +21,7 @@
   --grey: rgba(255, 255, 255, 0.5);
   --light-grey: rgba(255, 255, 255, 0.15);
   --modal-bg: rgba(0,0,0,0.9);
+  --shadow: drop-shadow(-3px 10px 3px var(--chip-shadow));
 }
 
 .app {

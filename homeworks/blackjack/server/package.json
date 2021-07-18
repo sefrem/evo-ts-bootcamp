@@ -1,16 +1,14 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/server.js",
   "license": "MIT",
   "scripts": {
-    "start": "node server.js",
+    "start": "node dist/server.js",
     "start-dev": "ts-node src/index.ts",
     "build": "webpack"
   },
   "dependencies": {
-    "@types/socket.io": "^3.0.2",
-    "app-root-path": "^3.0.0",
     "express": "^4.17.1",
     "socket.io": "^4.1.2"
   },

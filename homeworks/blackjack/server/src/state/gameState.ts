@@ -1,8 +1,8 @@
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { BroadcastOperator } from 'socket.io';
 
-import { Card, Dealer, GameStatus, InitialState, Player, ChipsValues } from '../types';
-import { shuffleArray, createDeck, countScoreInHand } from '../../utils';
+import { Card, Dealer, GameStatus, InitialState, Player, ChipsValues } from '../types/types';
+import { shuffleArray, createDeck, countScoreInHand, generateNickname } from '../../utils';
 import { BroadcastService } from './broadcastService';
 
 const initialDealerState: Dealer = {
@@ -43,7 +43,7 @@ export class GameState {
     public addPlayer(playerId: string): void {
         this.players.push({
             id: playerId,
-            name: 'SomeTestName',
+            name: generateNickname(),
             hand: [],
             score: 0,
             chips: {
@@ -52,7 +52,7 @@ export class GameState {
                 '50': 3,
                 '100': 2,
             },
-            roundStatus: '',
+            status: '',
             bet: [],
         });
         this.playersIds.push(playerId);
@@ -150,15 +150,21 @@ export class GameState {
 
         if (!dealerScore) return;
 
-        this.players.forEach(({ id, score, roundStatus }) => {
-            if (roundStatus === 'busted') {
+        this.players.forEach(({ id, score, status }) => {
+            if (status === 'busted') {
+                this.checkIfBankrupt(id);
                 return;
+            }
+
+            if (status === 'bankrupt') {
+                return
             }
 
             if (dealerScore <= 21 && score <= 21) {
                 if (dealerScore > score) {
                     this.removePlayerBet(id);
                     this.setPlayerLose(id);
+                    this.checkIfBankrupt(id);
                     this.broadcastService.emitPlayers(this.players);
                     return;
                 }
@@ -192,14 +198,13 @@ export class GameState {
     }
 
     private resetGame(): void {
-        let nextGameTimer = 5;
+        let nextGameTimer = 6;
         const countdownTimer = setInterval(() => {
             nextGameTimer -= 1;
             this.broadcastService.emitCountdownTimer(nextGameTimer);
             if (nextGameTimer! <= 0) {
                 this.resetPlayers();
                 this.resetDealer();
-                this.deck = shuffleArray(createDeck());
                 this.setActivePlayer(this.playersIds[0]);
                 this.status = GameStatus.idle;
                 clearInterval(countdownTimer);
@@ -212,13 +217,13 @@ export class GameState {
     }
 
     private resetPlayers(): void {
-        this.players = this.players.map(player => ({
-            ...player,
-            hand: [],
-            bet: [],
-            score: 0,
-            roundStatus: '',
-        }));
+        this.players = this.players.map(player => {
+            player.hand = [];
+            player.bet = [];
+            player.score = 0;
+            player.status =  player.status === 'bankrupt' ? 'bankrupt' : '';
+            return player
+        })
     }
 
     private resetDealer(): void {
@@ -249,7 +254,7 @@ export class GameState {
     }
 
     private checkIfAllBusted(): boolean {
-        return this.players.every(({ roundStatus }) => roundStatus === 'busted');
+        return this.players.every(({ status }) => status === 'busted');
     }
 
     private updateDealerScore(): void {
@@ -272,9 +277,11 @@ export class GameState {
                             this.dealer.hand.push(this.getCardFromTop());
                             this.broadcastService.emitDealer(this.dealer);
                         } else {
-                            players[j].hand.push(this.getCardFromTop());
-                            players[j].score = countScoreInHand(players[j].hand);
-                            this.broadcastService.emitPlayers(this.players);
+                            if(this.players[j].status !== 'bankrupt') {
+                                players[j].hand.push(this.getCardFromTop());
+                                players[j].score = countScoreInHand(players[j].hand);
+                                this.broadcastService.emitPlayers(this.players);
+                            }
                         }
                     }, j * 500);
                 }
@@ -285,6 +292,9 @@ export class GameState {
     }
 
     private getCardFromTop(): Card {
+        if(this.deck.length <= 10) {
+            this.deck = shuffleArray(createDeck());
+        }
         return this.deck.splice(0, 1)[0];
     }
 
@@ -304,6 +314,16 @@ export class GameState {
         this.getActivePlayer().chips[chipValue]--;
     }
 
+    private checkIfBankrupt(playerId: string): void {
+        const player = this.getPlayerById(playerId);
+        const chipsPlayerHas = Object.values(player.chips).filter(value => value);
+        if (chipsPlayerHas.length === 0) {
+            player.status = 'bankrupt';
+            this.playersIds.splice(this.playersIds.indexOf(playerId), 1);
+            this.broadcastService.emitPlayersIds(this.playersIds);
+        }
+    }
+
     private getActivePlayer(): Player {
         return this.getPlayerById(this.activePlayerId);
     }
@@ -313,7 +333,7 @@ export class GameState {
     }
 
     private setBusted(playerId: string): void {
-        this.getPlayerById(playerId).roundStatus = 'busted';
+        this.getPlayerById(playerId).status = 'busted';
     }
 
     private removePlayerBet(playerId: string): void {
@@ -321,15 +341,15 @@ export class GameState {
     }
 
     private setPlayerWin(playerId: string): void {
-        this.getPlayerById(playerId).roundStatus = 'win';
+        this.getPlayerById(playerId).status = 'win';
     }
 
     private setPlayerLose(playerId: string): void {
-        this.getPlayerById(playerId).roundStatus = 'lose';
+        this.getPlayerById(playerId).status = 'lose';
     }
 
     private setPlayerStandoff(playerId: string): void {
-        this.getPlayerById(playerId).roundStatus = 'standoff';
+        this.getPlayerById(playerId).status = 'standoff';
     }
 
     private setDealerBusted(): void {
