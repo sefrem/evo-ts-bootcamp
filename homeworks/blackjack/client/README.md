@@ -12,6 +12,6 @@ Check out the [deployed](https://blackjack-come-and-play.netlify.app/) version.
 To run the app locally first create `.env` file in the `client` folder's root and add the following variable:
 #### `REACT_APP_PATH=http://localhost:8080`
 
-After that do `yarn start-dev` in the `server` folder and `yarn start` in the 'client' folder.
+After that do `yarn start-dev` in the `server` folder and `yarn start` in the `client` folder.
 
 
