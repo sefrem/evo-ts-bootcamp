@@ -23,9 +23,18 @@
     background: var(--button-hit);
 }
 
+.buttonHit:hover {
+    background: var(--button-hit-hover);
+}
+
+
 .buttonStand {
     background: var(--button-stand);
     margin-top: 0.8em;
+}
+
+.buttonStand:hover {
+    background: var(--button-stand-hover);
 }
 
 .statusBadge {

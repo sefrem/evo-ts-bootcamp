@@ -14,6 +14,10 @@
     transform: translateY(-50%);
 }
 
+.buttonEndBet:hover {
+    background: var(--coral-dark);
+}
+
 .placeBet {
     display: flex;
     justify-content: center;

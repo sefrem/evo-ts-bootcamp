@@ -33,7 +33,13 @@ export interface Player {
     bet: ChipsValues[];
 }
 
-export type Dealer = Omit<Player, 'chips'>;
+export interface Dealer {
+    id: number;
+    name: string;
+    hand: Card[];
+    score: number;
+    status: 'busted' | '';
+}
 
 export enum GameStatus {
     idle = 'idle',

@@ -31,7 +31,7 @@ export interface Dealer {
     name: string;
     hand: Card[];
     score: number;
-    roundStatus: 'busted' | '';
+    status: 'busted' | '';
 }
 
 export interface State {

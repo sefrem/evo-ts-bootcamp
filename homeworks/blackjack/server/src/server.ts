@@ -5,7 +5,7 @@ import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 import { generateId } from '../utils';
 import { gameService } from './state/gameService';
-import { ChipsValues } from './types/types';
+import { ChipsValues } from './types';
 
 const port = Number(process.env.PORT) || 8080;
 

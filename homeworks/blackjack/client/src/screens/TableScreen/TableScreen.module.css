@@ -16,6 +16,7 @@
     font-size: 1.5em;
     font-weight: bold;
     color: var(--white);
+    z-index: 9999;
 }
 
 .timerCount {

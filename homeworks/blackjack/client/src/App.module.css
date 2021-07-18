@@ -10,8 +10,11 @@
   --card-red: #DD7678;
   --card-position: 0;
   --button-hit: #BFE698;
+  --button-hit-hover: #C8F0A0;
   --button-stand: #F9E28E;
+  --button-stand-hover: #FFE895;
   --coral: #EA748D;
+  --coral-dark: #F1869C;
   --white: #f6f6f6;
   --chip-shadow: rgba(37, 36, 47, 0.12);
   --bet-border: rgba(255, 255, 255, 0.3);

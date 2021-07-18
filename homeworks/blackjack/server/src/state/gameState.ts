@@ -1,16 +1,16 @@
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 import { BroadcastOperator } from 'socket.io';
 
-import { Card, Dealer, GameStatus, InitialState, Player, ChipsValues } from '../types/types';
+import { Card, Dealer, GameStatus, InitialState, Player, ChipsValues } from '../types';
 import { shuffleArray, createDeck, countScoreInHand, generateNickname } from '../../utils';
 import { BroadcastService } from './broadcastService';
 
-const initialDealerState: Dealer = {
+export const initialDealerState: Dealer = {
     id: 0,
     name: 'Dealer',
     hand: [],
     score: 0,
-    roundStatus: '',
+    status: '',
 };
 
 export class GameState {
@@ -37,7 +37,7 @@ export class GameState {
 
     public initGame(playerId: string): void {
         this.addPlayer(playerId);
-        this.deck = shuffleArray(createDeck());
+        this.createDeck();
     }
 
     public addPlayer(playerId: string): void {
@@ -157,7 +157,7 @@ export class GameState {
             }
 
             if (status === 'bankrupt') {
-                return
+                return;
             }
 
             if (dealerScore <= 21 && score <= 21) {
@@ -178,7 +178,7 @@ export class GameState {
 
             if (dealerScore > 21) {
                 if (this.dealer) {
-                    this.dealer.roundStatus = 'busted';
+                    this.dealer.status = 'busted';
                     this.broadcastService.emitDealer(this.dealer);
                 }
                 this.setDealerBusted();
@@ -221,16 +221,16 @@ export class GameState {
             player.hand = [];
             player.bet = [];
             player.score = 0;
-            player.status =  player.status === 'bankrupt' ? 'bankrupt' : '';
-            return player
-        })
+            player.status = player.status === 'bankrupt' ? 'bankrupt' : '';
+            return player;
+        });
     }
 
     private resetDealer(): void {
         if (this.dealer) {
             this.dealer.hand = [];
             this.dealer.score = 0;
-            this.dealer.roundStatus = '';
+            this.dealer.status = '';
         }
     }
 
@@ -277,7 +277,7 @@ export class GameState {
                             this.dealer.hand.push(this.getCardFromTop());
                             this.broadcastService.emitDealer(this.dealer);
                         } else {
-                            if(this.players[j].status !== 'bankrupt') {
+                            if (this.players[j].status !== 'bankrupt') {
                                 players[j].hand.push(this.getCardFromTop());
                                 players[j].score = countScoreInHand(players[j].hand);
                                 this.broadcastService.emitPlayers(this.players);
@@ -291,9 +291,9 @@ export class GameState {
         this.broadcastService.emitActivePlayerId(this.activePlayerId);
     }
 
-    private getCardFromTop(): Card {
-        if(this.deck.length <= 10) {
-            this.deck = shuffleArray(createDeck());
+    public getCardFromTop(): Card {
+        if (this.deck.length <= 10) {
+            this.createDeck();
         }
         return this.deck.splice(0, 1)[0];
     }
@@ -332,6 +332,10 @@ export class GameState {
         return this.players.find(({ id }) => id === playerId);
     }
 
+    private createDeck(): void {
+        this.deck = shuffleArray(createDeck());
+    }
+
     private setBusted(playerId: string): void {
         this.getPlayerById(playerId).status = 'busted';
     }
@@ -353,6 +357,6 @@ export class GameState {
     }
 
     private setDealerBusted(): void {
-        this.dealer.roundStatus = 'busted';
+        this.dealer.status = 'busted';
     }
 }

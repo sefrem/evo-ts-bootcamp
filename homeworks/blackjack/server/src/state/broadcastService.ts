@@ -1,7 +1,7 @@
 import { BroadcastOperator } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
-import { Dealer, GameStatus, Player } from '../types/types';
+import { Dealer, GameStatus, Player } from '../types';
 
 export class BroadcastService {
     private broadcastOperator: BroadcastOperator<DefaultEventsMap>;
@@ -31,6 +31,6 @@ export class BroadcastService {
     }
 
     public emitPlayersIds(playersIds: string[]) {
-        this.broadcastOperator.emit('gameStatePlayersIds')
+        this.broadcastOperator.emit('gameStatePlayersIds', playersIds);
     }
 }
