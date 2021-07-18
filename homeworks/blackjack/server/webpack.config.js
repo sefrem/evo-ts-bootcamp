@@ -4,7 +4,7 @@ const nodeExternals = require('webpack-node-externals');
 const isProduction = process.env.NODE_ENV === 'production';
 
 const config = {
-    entry: './src/types.ts',
+    entry: './src/index.ts',
     output: {
         filename: 'server.js',
         path: path.resolve(__dirname, 'dist'),
