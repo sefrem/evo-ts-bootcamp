@@ -4,7 +4,7 @@ This is a multiplayer blackjack game made with React on the front and Express se
 
 Check out the [deployed](https://blackjack-come-and-play.netlify.app/) version.
 
-##How to play
+## How to play
 
 1. Hit the New game button on the main screen
 2. Copy the url with the game code and send it to your friend
