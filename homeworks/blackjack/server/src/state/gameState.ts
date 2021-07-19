@@ -16,7 +16,13 @@ export const initialDealerState: Dealer = {
 export class GameState {
     private broadcastService: BroadcastService;
     private deck: Card[] = [];
-    public dealer: Dealer = initialDealerState;
+    public dealer: Dealer = {
+        id: 0,
+        name: 'Dealer',
+        hand: [],
+        score: 0,
+        status: '',
+    };
     public playersIds: string[] = [];
     public activePlayerId: string = '';
     public status: GameStatus = GameStatus.idle;
@@ -291,7 +297,7 @@ export class GameState {
         this.broadcastService.emitActivePlayerId(this.activePlayerId);
     }
 
-    private getCardFromTop(): Card {
+    public getCardFromTop(): Card {
         if (this.deck.length <= 10) {
             this.createDeck();
         }
