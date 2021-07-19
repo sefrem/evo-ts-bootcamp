@@ -291,7 +291,7 @@ export class GameState {
         this.broadcastService.emitActivePlayerId(this.activePlayerId);
     }
 
-    public getCardFromTop(): Card {
+    private getCardFromTop(): Card {
         if (this.deck.length <= 10) {
             this.createDeck();
         }
