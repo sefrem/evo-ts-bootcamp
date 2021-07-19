@@ -5,14 +5,6 @@ import { Card, Dealer, GameStatus, InitialState, Player, ChipsValues } from '../
 import { shuffleArray, createDeck, countScoreInHand, generateNickname } from '../../utils';
 import { BroadcastService } from './broadcastService';
 
-export const initialDealerState: Dealer = {
-    id: 0,
-    name: 'Dealer',
-    hand: [],
-    score: 0,
-    status: '',
-};
-
 export class GameState {
     private broadcastService: BroadcastService;
     private deck: Card[] = [];

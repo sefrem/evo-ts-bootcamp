@@ -1,6 +1,7 @@
 import MockedSocket from 'socket.io-mock';
-import { GameState, initialDealerState } from '../state/gameState';
-import { Card } from '../types';
+
+import { GameState } from '../state/gameState';
+import { Card, Dealer } from '../types';
 
 const socket = new MockedSocket();
 
@@ -14,6 +15,13 @@ const mockDeck: Card[] = [
     { rank: 'J', suit: 'clubs' },
     { rank: '10', suit: 'spades' },
 ];
+const initialDealerState: Dealer = {
+    id: 0,
+    name: 'Dealer',
+    hand: [],
+    score: 0,
+    status: '',
+};
 
 describe('Testing gameState logic', () => {
     const gameState = new GameState(socket);
