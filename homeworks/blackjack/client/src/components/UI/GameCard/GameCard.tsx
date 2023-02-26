@@ -29,9 +29,9 @@ const GameCard: React.VFC<Props> = ({ rank, suit, faceDown }) => {
                     <img className={styles.suitIcon} src={suitUrl} alt={`${rank} of ${suit}`} />
                 </div>
             </div>
-            <div className={styles.cardBack}>
+            {faceDown && <div className={styles.cardBack}>
                 <img src={cardBack} className={styles.cardBackPattern} alt="" />
-            </div>
+            </div>}
         </div>
     );
 };
