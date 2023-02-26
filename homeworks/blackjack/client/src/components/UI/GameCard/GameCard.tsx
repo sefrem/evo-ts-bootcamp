@@ -20,14 +20,14 @@ const GameCard: React.VFC<Props> = ({ rank, suit, faceDown }) => {
         <div className={clsx(styles.card, faceDown && styles.turnedCard)}>
             <div className={styles.cardFront}>
                 <div className={styles.cardValues}>
-                    <div className={clsx(styles.cardValue, (suit === 'hearts' || suit === 'diamonds') && styles.red)}>
+                    {!faceDown && <div className={clsx(styles.cardValue, (suit === 'hearts' || suit === 'diamonds') && styles.red)}>
                         {rank}
-                    </div>
+                    </div>}
                     <img className={styles.suitIconSmall} src={suitUrl} alt={`${rank} of ${suit}`} />
                 </div>
-                <div className={styles.cardField}>
+                {!faceDown && <div className={styles.cardField}>
                     <img className={styles.suitIcon} src={suitUrl} alt={`${rank} of ${suit}`} />
-                </div>
+                </div>}
             </div>
             {faceDown && <div className={styles.cardBack}>
                 <img src={cardBack} className={styles.cardBackPattern} alt="" />
